@@ -444,6 +444,12 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js').catch(() => {});
             });
+            // Auto-reload when a new SW version activates
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'SW_UPDATED') {
+                    window.location.reload();
+                }
+            });
         }
     </script>
 
