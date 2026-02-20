@@ -64,8 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try { initChart('chart-container'); } catch (e) { console.warn('Chart init error:', e); }
     applyTranslations();
     updateLangButton();
+    showLoadingSkeletons();
     loadAll();
     startAutoRefresh();
+    initCookieBanner();
 
     // Search input
     const searchInput = document.getElementById('coin-search');
@@ -125,6 +127,37 @@ function renderDynamicContent() {
     }
     populateDreamCoinSelect();
     calculateDream();
+}
+
+function showLoadingSkeletons() {
+    // Signal table skeletons
+    const signalsTbody = document.getElementById('signals-tbody');
+    if (signalsTbody) {
+        signalsTbody.innerHTML = Array(5).fill('').map(() => `
+            <tr><td colspan="7" style="padding:12px"><div class="skeleton" style="height:20px;width:100%"></div></td></tr>
+        `).join('');
+    }
+    // Coin table skeletons
+    const coinsTbody = document.getElementById('coins-tbody');
+    if (coinsTbody) {
+        coinsTbody.innerHTML = Array(8).fill('').map(() => `
+            <tr><td colspan="9" style="padding:12px"><div class="skeleton" style="height:20px;width:100%"></div></td></tr>
+        `).join('');
+    }
+    // Derivatives skeleton
+    const derivList = document.getElementById('derivatives-list');
+    if (derivList) {
+        derivList.innerHTML = Array(5).fill('').map(() => `
+            <div class="skeleton" style="height:16px;width:100%;margin-bottom:8px"></div>
+        `).join('');
+    }
+    // Movers skeleton
+    const moversList = document.getElementById('movers-list');
+    if (moversList) {
+        moversList.innerHTML = Array(4).fill('').map(() => `
+            <div class="skeleton" style="height:16px;width:100%;margin-bottom:8px"></div>
+        `).join('');
+    }
 }
 
 async function loadAll() {
@@ -248,7 +281,7 @@ async function loadCoins() {
     allCoins = coins;
     renderCoinTable(coins);
     populateDreamCoinSelect();
-    checkPriceAlerts();
+    checkPriceAlerts(coins);
 }
 
 function renderCoinTable(coins) {
@@ -912,4 +945,68 @@ function calculateDream() {
 function setText(id, text) {
     const el = document.getElementById(id);
     if (el) el.textContent = text;
+}
+
+// ─── Cookie Consent ───
+function initCookieBanner() {
+    const consent = localStorage.getItem('bedavafinans-cookie-consent');
+    if (!consent) {
+        const banner = document.getElementById('cookie-banner');
+        if (banner) banner.style.display = 'block';
+    } else if (consent === 'rejected') {
+        disableAnalytics();
+    }
+}
+
+function acceptCookies() {
+    localStorage.setItem('bedavafinans-cookie-consent', 'accepted');
+    const banner = document.getElementById('cookie-banner');
+    if (banner) banner.style.display = 'none';
+}
+
+function rejectCookies() {
+    localStorage.setItem('bedavafinans-cookie-consent', 'rejected');
+    const banner = document.getElementById('cookie-banner');
+    if (banner) banner.style.display = 'none';
+    disableAnalytics();
+}
+
+function disableAnalytics() {
+    window['ga-disable-G-11WXWNV8ZY'] = true;
+}
+
+// ─── Price Alerts ───
+function checkPriceAlerts(coins) {
+    if (!priceAlerts.length || !coins.length) return;
+    const triggered = [];
+    priceAlerts.forEach((alert, i) => {
+        const coin = coins.find(c => c.id === alert.coinId);
+        if (!coin) return;
+        const price = coin.current_price;
+        if (alert.direction === 'above' && price >= alert.target) {
+            triggered.push(i);
+            showToast(`${coin.symbol.toUpperCase()} $${formatNum(price)} ulaştı (hedef: $${formatNum(alert.target)})`, 'info');
+        } else if (alert.direction === 'below' && price <= alert.target) {
+            triggered.push(i);
+            showToast(`${coin.symbol.toUpperCase()} $${formatNum(price)} düştü (hedef: $${formatNum(alert.target)})`, 'info');
+        }
+    });
+    // Remove triggered alerts
+    if (triggered.length) {
+        for (let i = triggered.length - 1; i >= 0; i--) {
+            priceAlerts.splice(triggered[i], 1);
+        }
+        localStorage.setItem('bedavafinans-alerts', JSON.stringify(priceAlerts));
+    }
+}
+
+function addPriceAlert(coinId, target, direction = 'above') {
+    priceAlerts.push({ coinId, target: parseFloat(target), direction, createdAt: Date.now() });
+    localStorage.setItem('bedavafinans-alerts', JSON.stringify(priceAlerts));
+    showToast(`Alarm eklendi: ${coinId} ${direction === 'above' ? '↑' : '↓'} $${target}`, 'success');
+}
+
+function removePriceAlert(index) {
+    priceAlerts.splice(index, 1);
+    localStorage.setItem('bedavafinans-alerts', JSON.stringify(priceAlerts));
 }

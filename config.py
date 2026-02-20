@@ -9,7 +9,7 @@ CRYPTOCOMPARE_BASE_URL = "https://min-api.cryptocompare.com"
 BLOCKCHAIR_BASE_URL = "https://api.blockchair.com"
 
 # === General ===
-TOP_N_COINS = 50
+TOP_N_COINS = 100
 SIGNAL_COINS_COUNT = 15  # Top N coins for automatic signal computation
 TOP_MOVERS_COUNT = 10
 AUTO_REFRESH_INTERVAL = 120  # seconds - frontend polling

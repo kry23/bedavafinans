@@ -2,18 +2,26 @@
 
 import asyncio
 import sys
+import time
+from collections import defaultdict
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, JSONResponse
 
 from config import HOST, PORT, CACHE_TTL_MARKET_DATA
 from backend.api.routes import router as api_router
 
 # Ensure project root is on path
 sys.path.insert(0, str(Path(__file__).parent))
+
+
+# ─── Rate Limiting ───
+rate_limit_store: dict[str, list[float]] = defaultdict(list)
+RATE_LIMIT_MAX = 60  # requests per window
+RATE_LIMIT_WINDOW = 60  # seconds
 
 
 async def periodic_refresh():
@@ -49,6 +57,27 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="BedavaFinans - Crypto Signal Dashboard", lifespan=lifespan)
+
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    """Rate limit API requests (60 req/min per IP)."""
+    path = request.url.path
+    if path.startswith("/api/") and path != "/api/health":
+        client_ip = request.client.host if request.client else "unknown"
+        now = time.time()
+        # Clean old entries
+        rate_limit_store[client_ip] = [
+            t for t in rate_limit_store[client_ip] if now - t < RATE_LIMIT_WINDOW
+        ]
+        if len(rate_limit_store[client_ip]) >= RATE_LIMIT_MAX:
+            return JSONResponse(
+                status_code=429,
+                content={"error": "Too many requests. Please wait."},
+                headers={"Retry-After": str(RATE_LIMIT_WINDOW)},
+            )
+        rate_limit_store[client_ip].append(now)
+    return await call_next(request)
 
 
 @app.middleware("http")
@@ -120,6 +149,13 @@ Disallow: /api/
 
 Sitemap: https://bedavafinans.info/sitemap.xml"""
     return Response(content=txt, media_type="text/plain")
+
+
+# 404 catch-all (must be last)
+@app.api_route("/{path:path}", methods=["GET"])
+async def catch_all(path: str):
+    """Serve 404 page for unknown routes."""
+    return FileResponse(str(frontend_dir / "404.html"), status_code=404)
 
 
 if __name__ == "__main__":

@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#0a0a0f">
-    <meta name="description" content="BedavaFinans - Kripto piyasa sinyal paneli. Top 50 coin, teknik analiz sinyalleri, Fear & Greed, balina takibi ve daha fazlasi.">
+    <meta name="description" content="BedavaFinans - Kripto piyasa sinyal paneli. Top 100 coin, teknik analiz sinyalleri, Fear & Greed, balina takibi ve daha fazlasi.">
     <meta name="keywords" content="kripto, bitcoin, sinyal, teknik analiz, fear greed, whale tracker, derivatives, BedavaFinans">
     <meta name="author" content="BedavaFinans">
     <meta property="og:title" content="BedavaFinans - Kripto Sinyal Paneli">
-    <meta property="og:description" content="Top 50 coin icin 4 katmanli bilesik sinyal sistemi, gercek zamanli piyasa verileri ve teknik analiz.">
+    <meta property="og:description" content="Top 100 coin icin 4 katmanli bilesik sinyal sistemi, gercek zamanli piyasa verileri ve teknik analiz.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bedavafinans.info">
     <meta property="og:locale" content="tr_TR">
+    <meta property="og:image" content="https://bedavafinans.info/static/og-image.svg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="BedavaFinans - Kripto Sinyal Paneli">
-    <meta name="twitter:description" content="Top 50 coin icin 4 katmanli bilesik sinyal sistemi, gercek zamanli piyasa verileri.">
+    <meta name="twitter:description" content="Top 100 coin icin 4 katmanli bilesik sinyal sistemi, gercek zamanli piyasa verileri.">
+    <meta name="twitter:image" content="https://bedavafinans.info/static/og-image.svg">
     <link rel="canonical" href="https://bedavafinans.info">
     <link rel="icon" type="image/svg+xml" href="/static/icons/icon-192.svg">
     <link rel="manifest" href="/manifest.json">
@@ -279,7 +283,7 @@
         <div class="card" style="padding:0;overflow:hidden;min-height:200px">
             <div class="px-4 py-3 flex items-center justify-between flex-wrap gap-2" style="border-bottom:1px solid var(--border)">
                 <div class="flex items-center gap-2">
-                    <h2 class="font-semibold text-sm" data-i18n="all-coins">Tüm Coinler (Top 50)</h2>
+                    <h2 class="font-semibold text-sm" data-i18n="all-coins">Tüm Coinler (Top 100)</h2>
                     <button id="watchlist-filter" onclick="toggleWatchlistFilter()" class="tab-btn" style="color:var(--text-secondary);font-size:11px;padding:4px 8px" data-i18n-title="watchlist-filter-title" title="Favorileri filtrele">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         <span data-i18n="watchlist">Favoriler</span>
@@ -346,6 +350,20 @@
 
     <!-- Toast container -->
     <div class="toast-container" id="toast-container"></div>
+
+    <!-- Cookie/KVKK Consent Banner -->
+    <div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9998;background:var(--bg-secondary);border-top:1px solid var(--border);padding:14px 20px;box-shadow:0 -2px 12px var(--shadow)">
+        <div style="max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+            <p style="font-size:13px;color:var(--text-secondary);margin:0;flex:1;min-width:200px">
+                <span data-i18n="cookie-text">Bu site deneyiminizi iyileştirmek için çerez kullanır (Google Analytics). Devam ederek çerez kullanımını kabul etmiş olursunuz.</span>
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:var(--accent-blue);text-decoration:underline;margin-left:4px" data-i18n="cookie-privacy">Gizlilik Politikası</a>
+            </p>
+            <div style="display:flex;gap:8px">
+                <button onclick="acceptCookies()" style="padding:8px 20px;border-radius:8px;border:none;background:var(--accent-blue);color:#fff;font-size:13px;font-weight:600;cursor:pointer" data-i18n="cookie-accept">Kabul Et</button>
+                <button onclick="rejectCookies()" style="padding:8px 20px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-secondary);font-size:13px;cursor:pointer" data-i18n="cookie-reject">Reddet</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts (order matters: i18n before app; defer preserves order) -->
     <script src="/static/js/utils.js" defer></script>

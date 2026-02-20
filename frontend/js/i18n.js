@@ -50,7 +50,7 @@ const TRANSLATIONS = {
         'news-sentiment': 'Haber Duygusu',
 
         // Coin Table
-        'all-coins': 'Tüm Coinler (Top 50)',
+        'all-coins': 'Tüm Coinler (Top 100)',
         'search-placeholder': 'Coin ara...',
         'th-rank': '#',
         'th-1h': '1s',
@@ -65,6 +65,12 @@ const TRANSLATIONS = {
         'footer-data': 'Veri:',
         'footer-refresh': 'Otomatik yenileme: 2 dk',
         'share': 'Paylaş:',
+
+        // Cookie Banner
+        'cookie-text': 'Bu site deneyiminizi iyileştirmek için çerez kullanır (Google Analytics). Devam ederek çerez kullanımını kabul etmiş olursunuz.',
+        'cookie-privacy': 'Gizlilik Politikası',
+        'cookie-accept': 'Kabul Et',
+        'cookie-reject': 'Reddet',
 
         // Signals
         'strong-buy': 'GÜÇLÜ AL',
@@ -215,7 +221,7 @@ const TRANSLATIONS = {
 
         'news-sentiment': 'News Sentiment',
 
-        'all-coins': 'All Coins (Top 50)',
+        'all-coins': 'All Coins (Top 100)',
         'search-placeholder': 'Search coin...',
         'th-rank': '#',
         'th-1h': '1h',
@@ -229,6 +235,12 @@ const TRANSLATIONS = {
         'footer-data': 'Data:',
         'footer-refresh': 'Auto-refresh: 2 min',
         'share': 'Share:',
+
+        // Cookie Banner
+        'cookie-text': 'This site uses cookies (Google Analytics) to improve your experience. By continuing, you accept the use of cookies.',
+        'cookie-privacy': 'Privacy Policy',
+        'cookie-accept': 'Accept',
+        'cookie-reject': 'Reject',
 
         'strong-buy': 'STRONG BUY',
         'buy': 'BUY',
