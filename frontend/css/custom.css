@@ -1,0 +1,326 @@
+/* BedavaFinans Theme Styles */
+
+/* Dark theme (default) */
+.dark {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #111118;
+    --bg-card: #16161e;
+    --bg-card-hover: #1c1c28;
+    --border: #2a2a3a;
+    --text-primary: #e4e4ef;
+    --text-secondary: #8888a0;
+    --accent-green: #10b981;
+    --accent-red: #ef4444;
+    --accent-orange: #f97316;
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+    --shadow: rgba(0,0,0,0.3);
+    --overlay-white: rgba(255,255,255,0.05);
+    --scrollbar-thumb: #333;
+    --scrollbar-thumb-hover: #555;
+    --gauge-inner: var(--bg-card);
+    --needle-color: #ffffff;
+}
+
+/* Light theme */
+.light {
+    --bg-primary: #f0f2f5;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8f9fb;
+    --border: #e2e4e9;
+    --text-primary: #1a1a2e;
+    --text-secondary: #6b7280;
+    --accent-green: #059669;
+    --accent-red: #dc2626;
+    --accent-orange: #ea580c;
+    --accent-blue: #2563eb;
+    --accent-purple: #7c3aed;
+    --shadow: rgba(0,0,0,0.08);
+    --overlay-white: rgba(0,0,0,0.03);
+    --scrollbar-thumb: #c4c4c4;
+    --scrollbar-thumb-hover: #a0a0a0;
+    --gauge-inner: #ffffff;
+    --needle-color: #1a1a2e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+
+/* Cards */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+.card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border);
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* Signal Badges */
+.signal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.signal-badge.strong-buy { background: rgba(16, 185, 129, 0.15); color: #10b981; box-shadow: 0 0 12px rgba(16,185,129,0.2); }
+.signal-badge.buy { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+.signal-badge.neutral { background: rgba(107, 114, 128, 0.15); color: #9ca3af; }
+.signal-badge.sell { background: rgba(249, 115, 22, 0.15); color: #f97316; }
+.signal-badge.strong-sell { background: rgba(239, 68, 68, 0.15); color: #ef4444; box-shadow: 0 0 12px rgba(239,68,68,0.2); }
+
+/* Percentage colors */
+.text-up { color: var(--accent-green); }
+.text-down { color: var(--accent-red); }
+.text-neutral { color: var(--text-secondary); }
+
+/* Whale Ticker */
+.whale-ticker {
+    overflow: hidden;
+    white-space: nowrap;
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 8px;
+    padding: 8px 0;
+}
+.whale-ticker-inner {
+    display: inline-block;
+    animation: ticker 30s linear infinite;
+}
+@keyframes ticker {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Tables */
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.data-table th {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+.data-table th:hover { color: var(--text-primary); }
+.data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+.data-table tbody tr { transition: background 0.15s ease; }
+.data-table tbody tr:hover { background: var(--bg-card-hover); }
+.data-table tbody tr.selected { background: rgba(59, 130, 246, 0.1); }
+
+/* Fear & Greed Gauge */
+.gauge-container {
+    position: relative;
+    width: 120px;
+    height: 60px;
+    margin: 0 auto;
+}
+.gauge-bg {
+    width: 120px;
+    height: 60px;
+    border-radius: 60px 60px 0 0;
+    background: conic-gradient(
+        from 180deg at 50% 100%,
+        #ef4444 0deg,
+        #f97316 45deg,
+        #eab308 90deg,
+        #22c55e 135deg,
+        #10b981 180deg
+    );
+    position: relative;
+    overflow: hidden;
+}
+.gauge-bg::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 45px;
+    background: var(--gauge-inner);
+    border-radius: 45px 45px 0 0;
+}
+.gauge-needle {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    height: 40px;
+    background: var(--needle-color);
+    transform-origin: bottom center;
+    transition: transform 0.8s ease;
+    z-index: 2;
+}
+.gauge-value {
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Loading skeleton */
+.skeleton {
+    background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+}
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Flash animation on price update */
+.flash-green { animation: flashGreen 0.6s ease; }
+.flash-red { animation: flashRed 0.6s ease; }
+@keyframes flashGreen {
+    0%, 100% { background: transparent; }
+    50% { background: rgba(16, 185, 129, 0.15); }
+}
+@keyframes flashRed {
+    0%, 100% { background: transparent; }
+    50% { background: rgba(239, 68, 68, 0.15); }
+}
+
+/* Tab buttons */
+.tab-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+.tab-btn.active {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--accent-blue);
+}
+.tab-btn:hover:not(.active) {
+    background: var(--overlay-white);
+    color: var(--text-primary);
+}
+
+/* Score bar */
+.score-bar {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--bg-secondary);
+    overflow: hidden;
+}
+.score-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+/* Mini sparkline placeholder */
+.mini-chart {
+    width: 60px;
+    height: 24px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Search input */
+.search-input {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px 8px 36px;
+    color: var(--text-primary);
+    font-size: 13px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+.search-input:focus {
+    border-color: var(--accent-blue);
+}
+.search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-secondary);
+}
+.theme-toggle:hover {
+    background: var(--bg-card-hover);
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+/* Smooth theme transition */
+body, .card, header, footer, .data-table th, .data-table td,
+.search-input, .tab-btn, .whale-ticker, .gauge-bg::after {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Light theme signal badge adjustments */
+.light .signal-badge.neutral { color: #6b7280; }
+.light .data-table tbody tr.selected { background: rgba(37, 99, 235, 0.08); }
+.light .whale-ticker {
+    background: rgba(37, 99, 235, 0.04);
+    border-color: rgba(37, 99, 235, 0.12);
+}
+.light .tab-btn.active {
+    background: rgba(37, 99, 235, 0.1);
+}
+
+/* Light theme SVG ring adjustment */
+.light #market-score-ring circle:first-child { stroke: rgba(0,0,0,0.06) !important; }

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BedavaFinans - Kripto Sinyal Paneli</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <link rel="stylesheet" href="/static/css/custom.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen">
+
+    <!-- ═══ HEADER ═══ -->
+    <header style="background:var(--bg-secondary);border-bottom:1px solid var(--border)" class="px-4 py-3">
+        <div class="max-w-[1440px] mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <h1 class="text-lg font-bold" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">
+                    BedavaFinans
+                </h1>
+                <div id="market-score-ring" class="ml-2"></div>
+            </div>
+            <div class="flex items-center gap-4 text-sm">
+                <span id="loading-indicator" style="display:none;color:var(--accent-blue)">
+                    <svg class="animate-spin inline w-4 h-4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="32" stroke-dashoffset="8"/></svg>
+                </span>
+                <span style="color:var(--text-secondary)" data-i18n="last-update">Son:</span>
+                <span id="last-updated" class="font-medium">--:--</span>
+                <button id="refresh-toggle" class="tab-btn active" style="color:#10b981" data-i18n="auto">Oto</button>
+                <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle" data-i18n-title="toggle-theme" title="Tema değiştir">
+                    <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </button>
+                <button id="lang-toggle" onclick="toggleLang()" class="tab-btn" style="color:var(--accent-purple);font-weight:700;min-width:32px" title="Switch to English">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1440px] mx-auto px-4 py-4 flex flex-col gap-4">
+
+        <!-- ═══ ROW 1: Market Overview Cards ═══ -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="card">
+                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="total-market-cap">Toplam Piyasa Değeri</div>
+                <div id="total-mcap" class="text-xl font-bold">—</div>
+                <div id="mcap-change" class="text-sm mt-1">—</div>
+            </div>
+            <div class="card">
+                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="24h-volume">24s Hacim</div>
+                <div id="total-volume" class="text-xl font-bold">—</div>
+            </div>
+            <div class="card">
+                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="btc-dominance-label">BTC Hakimiyeti</div>
+                <div id="btc-dominance" class="text-xl font-bold">—</div>
+            </div>
+            <div class="card">
+                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="fear-greed-label">Korku & Açgözlülük</div>
+                <div id="fear-greed-gauge"></div>
+                <div id="fear-greed-history" class="mt-2"></div>
+            </div>
+        </div>
+
+        <!-- ═══ ROW 2: Whale Ticker ═══ -->
+        <div id="whale-ticker"></div>
+
+        <!-- ═══ ROW 3: Signals + Derivatives ═══ -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="lg:col-span-2 card" style="padding:0;overflow:hidden">
+                <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
+                    <h2 class="font-semibold text-sm" data-i18n="trading-signals">İşlem Sinyalleri (Top 15)</h2>
+                    <span style="font-size:11px;color:var(--text-secondary)" data-i18n="4-layer">4 Katmanlı Bileşik</span>
+                </div>
+                <div style="overflow-x:auto;max-height:420px;overflow-y:auto">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="th-coin">Coin</th>
+                                <th data-i18n="th-price">Fiyat</th>
+                                <th data-i18n="th-24h">24s</th>
+                                <th data-i18n="th-signal">Sinyal</th>
+                                <th data-i18n="th-score">Skor</th>
+                                <th data-i18n="th-rsi">RSI</th>
+                                <th data-i18n="th-layers">Katmanlar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="signals-tbody">
+                            <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-secondary)" data-i18n="loading-signals">Sinyaller yükleniyor...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card" style="padding:0;overflow:hidden">
+                <div class="px-4 py-3" style="border-bottom:1px solid var(--border)">
+                    <h2 class="font-semibold text-sm" data-i18n="derivatives">Türev Piyasalar</h2>
+                    <div class="flex gap-4 mt-1" style="font-size:10px;color:var(--text-secondary)">
+                        <span data-i18n="th-symbol">Sembol</span><span data-i18n="th-funding">Fonlama</span><span data-i18n="th-ls">U/K</span><span data-i18n="th-oi">AK</span>
+                    </div>
+                </div>
+                <div id="derivatives-list" class="px-4 py-2" style="max-height:380px;overflow-y:auto">
+                    <div style="color:var(--text-secondary);font-size:12px" data-i18n="loading">Yükleniyor...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ ROW 4: Chart + Side Panels ═══ -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="lg:col-span-2 card" style="padding:0;overflow:hidden">
+                <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
+                    <h2 id="chart-title" class="font-semibold text-sm">Bitcoin (BTC)</h2>
+                    <div class="flex gap-2" style="font-size:10px">
+                        <span style="color:#f97316">━ <span data-i18n="chart-legend-ema9">EMA 9</span></span>
+                        <span style="color:#8b5cf6">━ <span data-i18n="chart-legend-ema21">EMA 21</span></span>
+                        <span style="color:rgba(59,130,246,0.5)">┈ <span data-i18n="chart-legend-bb">BB</span></span>
+                    </div>
+                </div>
+                <div id="chart-container" style="height:400px"></div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="card" style="padding:0;overflow:hidden">
+                    <div class="px-4 py-3 flex items-center gap-2" style="border-bottom:1px solid var(--border)">
+                        <h2 class="font-semibold text-sm" data-i18n="top-movers">En Çok Değişenler</h2>
+                        <div class="flex gap-1 ml-auto">
+                            <button class="tab-btn movers-tab active" data-tab="gainers" onclick="switchMoversTab('gainers')" data-i18n="gainers">Yükselenler</button>
+                            <button class="tab-btn movers-tab" data-tab="losers" onclick="switchMoversTab('losers')" data-i18n="losers">Düşenler</button>
+                        </div>
+                    </div>
+                    <div id="movers-list" class="px-4 py-2" style="max-height:180px;overflow-y:auto">
+                        <div style="color:var(--text-secondary);font-size:12px" data-i18n="loading">Yükleniyor...</div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding:0;overflow:hidden">
+                    <div class="px-4 py-3" style="border-bottom:1px solid var(--border)">
+                        <h2 class="font-semibold text-sm" data-i18n="volume-anomalies">Hacim Anomalileri</h2>
+                    </div>
+                    <div id="anomalies-list" class="px-4 py-2" style="max-height:140px;overflow-y:auto">
+                        <div style="color:var(--text-secondary);font-size:12px" data-i18n="loading">Yükleniyor...</div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding:0;overflow:hidden">
+                    <div class="px-4 py-3" style="border-bottom:1px solid var(--border)">
+                        <h2 class="font-semibold text-sm" data-i18n="news-sentiment">Haber Duygusu</h2>
+                    </div>
+                    <div id="news-sentiment" class="px-4 py-2" style="max-height:240px;overflow-y:auto">
+                        <div style="color:var(--text-secondary);font-size:12px" data-i18n="loading">Yükleniyor...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ ROW 5: Full Coin Table ═══ -->
+        <div class="card" style="padding:0;overflow:hidden">
+            <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
+                <h2 class="font-semibold text-sm" data-i18n="all-coins">Tüm Coinler (Top 50)</h2>
+                <div style="position:relative;width:220px">
+                    <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-secondary)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+                    <input type="text" id="coin-search" class="search-input" data-i18n="search-placeholder" placeholder="Coin ara...">
+                </div>
+            </div>
+            <div style="overflow-x:auto;max-height:500px;overflow-y:auto">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('market_cap_rank')" style="width:40px" data-i18n="th-rank">#</th>
+                            <th onclick="sortTable('name')" data-i18n="th-coin">Coin</th>
+                            <th onclick="sortTable('current_price')" data-i18n="th-price">Fiyat</th>
+                            <th onclick="sortTable('price_change_percentage_1h_in_currency')" data-i18n="th-1h">1s</th>
+                            <th onclick="sortTable('price_change_percentage_24h_in_currency')" data-i18n="th-24h">24s</th>
+                            <th onclick="sortTable('price_change_percentage_7d_in_currency')" data-i18n="th-7d">7g</th>
+                            <th onclick="sortTable('total_volume')" data-i18n="th-volume">Hacim</th>
+                            <th onclick="sortTable('market_cap')" data-i18n="th-market-cap">Piyasa Değeri</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coins-tbody">
+                        <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-secondary)" data-i18n="loading-coins">Coinler yükleniyor...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="text-center py-4" style="color:var(--text-secondary);font-size:11px;border-top:1px solid var(--border)">
+        <span data-i18n="footer-text">BedavaFinans Sinyal Paneli</span> &middot; <span data-i18n="footer-data">Veri:</span> CoinGecko, Binance, Alternative.me, CryptoCompare &middot; <span data-i18n="footer-refresh">Otomatik yenileme: 2 dk</span>
+    </footer>
+
+    <!-- Scripts (order matters: i18n before app) -->
+    <script src="/static/js/utils.js"></script>
+    <script src="/static/js/i18n.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script src="/static/js/signals.js"></script>
+    <script src="/static/js/widgets.js"></script>
+    <script src="/static/js/app.js"></script>
+
+</body>
+</html>
