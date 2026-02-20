@@ -20,10 +20,11 @@ primary_region = 'ams'
     port = 8000
     type = 'http'
     interval = '30s'
-    timeout = '5s'
+    timeout = '10s'
+    grace_period = '30s'
     path = '/api/health'
 
 [[vm]]
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 256
+  memory_mb = 512
