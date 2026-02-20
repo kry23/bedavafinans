@@ -169,3 +169,93 @@ function renderMarketScoreRing(containerId, score, label) {
         <div style="text-align:center;margin-top:4px;font-size:11px;color:${color};font-weight:600">${escapeHtml(label || '')}</div>
     `;
 }
+
+
+function renderSocialBuzz(containerId, buzzData) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (!buzzData || buzzData.length === 0) {
+        container.innerHTML = `<div style="color:var(--text-secondary);font-size:12px;padding:8px">${t('loading')}</div>`;
+        return;
+    }
+
+    container.innerHTML = buzzData.slice(0, 15).map((item, idx) => {
+        const buzzScore = item.buzz_score || 0;
+        const direction = item.direction || 'up';
+        const dirColor = direction === 'up' ? '#10b981' : '#ef4444';
+        const dirArrow = direction === 'up' ? '\u25B2' : '\u25BC';
+        const volRatio = item.volume_ratio || 0;
+        const pct24h = item.price_change_24h || 0;
+        const pct1h = item.price_change_1h || 0;
+
+        // Buzz bar width (max 100%)
+        const maxBuzz = buzzData[0]?.buzz_score || 1;
+        const barPct = Math.min((buzzScore / maxBuzz) * 100, 100);
+
+        // Color intensity based on buzz
+        const buzzColor = buzzScore > 50 ? '#10b981' : buzzScore > 20 ? '#3b82f6' : buzzScore > 10 ? '#eab308' : '#6b7280';
+
+        return `
+            <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="selectCoin('${item.coin_id}')">
+                <span style="font-size:10px;color:var(--text-secondary);width:18px;text-align:center">${idx + 1}</span>
+                <div style="display:flex;align-items:center;gap:6px;width:75px;flex-shrink:0">
+                    ${item.image ? `<img src="${item.image}" width="18" height="18" style="border-radius:50%" alt="" loading="lazy">` : ''}
+                    <span style="font-size:12px;font-weight:600">${item.symbol}</span>
+                </div>
+                <div style="flex:1;position:relative;height:20px;border-radius:4px;overflow:hidden;background:var(--border)">
+                    <div style="width:${barPct}%;height:100%;background:${buzzColor};opacity:0.3;border-radius:4px"></div>
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 6px;font-size:10px">
+                        <span style="color:${dirColor};font-weight:600">${dirArrow} ${formatPercentagePlain(pct24h)}</span>
+                        <span style="color:var(--text-secondary)">${volRatio}% vol</span>
+                    </div>
+                </div>
+                <div style="text-align:right;width:40px;flex-shrink:0">
+                    <span style="font-size:12px;font-weight:700;color:${buzzColor}">${buzzScore.toFixed(0)}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+
+function renderTrendingSocial(containerId, trending) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (!trending || trending.length === 0) {
+        container.innerHTML = `<div style="color:var(--text-secondary);font-size:12px;padding:8px">${t('no-lunarcrush')}</div>`;
+        return;
+    }
+
+    container.innerHTML = trending.slice(0, 15).map((item, idx) => {
+        const sentiment = item.sentiment || 0;
+        const sentColor = sentiment > 60 ? '#10b981' : sentiment > 40 ? '#eab308' : '#ef4444';
+        const pctChange = item.price_change_24h;
+        const pctColor = pctChange > 0 ? '#10b981' : pctChange < 0 ? '#ef4444' : '#6b7280';
+        const thumb = item.thumb || item.large_image || '';
+        const symbol = item.symbol || '';
+        const rank = item.rank;
+
+        return `
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="selectCoin('${item.topic}')">
+                <span style="font-size:11px;color:var(--text-secondary);width:20px;text-align:center">${idx + 1}</span>
+                ${thumb ? `<img src="${thumb}" width="20" height="20" style="border-radius:50%" alt="" loading="lazy">` : ''}
+                <div style="flex:1">
+                    <div style="display:flex;align-items:center;gap:4px">
+                        <span style="font-size:12px;font-weight:600">${escapeHtml(item.title || item.topic)}</span>
+                        ${symbol ? `<span style="font-size:10px;color:var(--text-secondary)">${symbol}</span>` : ''}
+                    </div>
+                    <div style="display:flex;gap:10px;font-size:10px;color:var(--text-secondary);margin-top:2px">
+                        ${rank ? `<span>#${rank}</span>` : ''}
+                        ${pctChange != null ? `<span style="color:${pctColor}">${pctChange > 0 ? '+' : ''}${pctChange.toFixed(1)}%</span>` : ''}
+                        ${item.market_cap ? `<span>MCap: ${item.market_cap}</span>` : ''}
+                    </div>
+                </div>
+                <div style="text-align:right;flex-shrink:0">
+                    <div style="font-size:9px;color:${sentColor}">${sentiment > 60 ? t('sentiment-positive') : sentiment > 40 ? t('neutral-sent') : t('sentiment-negative')}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}

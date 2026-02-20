@@ -56,3 +56,11 @@ async function getSentiment() {
 async function getCoinDetail(coinId) {
     return await fetchJSON(`/coin/${coinId}`);
 }
+
+async function getSocialOverview() {
+    return await fetchJSON('/social/overview');
+}
+
+async function getSocialCoin(coinId) {
+    return await fetchJSON(`/social/coin/${coinId}`);
+}

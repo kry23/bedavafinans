@@ -215,13 +215,103 @@ async def run_tests():
             html_class_back = await page.evaluate("document.documentElement.className")
             log("Theme switches back to dark", "dark" in html_class_back, f"Class: {html_class_back}")
 
-        # ─── Test 20: Console errors ───
+        # ─── Test 20: Dream Machine - Section Renders ───
+        print("\n--- Dream Machine ---")
+        dream_card = await page.query_selector(".dream-machine-card")
+        log("Dream Machine section renders", dream_card is not None)
+
+        dream_title = await page.text_content(".dream-machine-card h2")
+        log("Dream Machine title visible", "Hayal" in dream_title or "Dream" in dream_title, f"Title: {dream_title}")
+
+        # ─── Test 21: Dream Machine - Coin Select Populated ───
+        dream_coin_select = await page.query_selector("#dream-coin")
+        dream_options = await page.query_selector_all("#dream-coin option")
+        log("Dream coin select has options", len(dream_options) > 1, f"Options: {len(dream_options)}")
+
+        # ─── Test 22: Dream Machine - Quick Buttons Exist ───
+        pct_btns = await page.query_selector_all(".dream-pct-btn")
+        log("Quick percentage buttons exist", len(pct_btns) == 7, f"Buttons: {len(pct_btns)}")
+
+        # ─── Test 23: Dream Machine - Calculate with inputs ───
+        # Select Bitcoin
+        await page.select_option("#dream-coin", "bitcoin")
+        await page.fill("#dream-amount", "1000")
+        await page.fill("#dream-target", "100")
+        await page.wait_for_timeout(500)
+
+        dream_results = await page.query_selector("#dream-results")
+        dream_results_display = await dream_results.evaluate("el => getComputedStyle(el).display") if dream_results else "none"
+        log("Dream results appear after input", dream_results_display != "none", f"Display: {dream_results_display}")
+
+        # ─── Test 24: Dream Machine - Summary shows profit ───
+        dream_summary = await page.text_content("#dream-summary")
+        has_profit = "$" in dream_summary
+        log("Dream summary shows profit", has_profit, f"Summary has $: {has_profit}")
+
+        # ─── Test 25: Dream Machine - Items grid renders ───
+        dream_items = await page.query_selector_all(".dream-item")
+        log("Dream items grid has items", len(dream_items) == 17, f"Items: {len(dream_items)}")
+
+        # ─── Test 26: Dream Machine - Affordable items have count badge ───
+        affordable_items = await page.query_selector_all(".dream-item.affordable")
+        log("Some items marked affordable", len(affordable_items) > 0, f"Affordable: {len(affordable_items)}")
+
+        count_badges = await page.query_selector_all(".dream-item-count")
+        log("Affordable items have count badges", len(count_badges) > 0, f"Badges: {len(count_badges)}")
+
+        # ─── Test 27: Dream Machine - Quick button sets target ───
+        await page.click(".dream-pct-btn >> text=+500%")
+        await page.wait_for_timeout(300)
+        target_val = await page.input_value("#dream-target")
+        log("Quick button sets target value", target_val == "500", f"Target: {target_val}")
+
+        # Check button gets active class
+        active_btn = await page.query_selector(".dream-pct-btn.active")
+        active_btn_text = await active_btn.text_content() if active_btn else ""
+        log("Quick button shows active state", "+500%" in active_btn_text, f"Active: {active_btn_text}")
+
+        # ─── Test 28: Dream Machine - Unaffordable items are dimmed ───
+        unaffordable_items = await page.query_selector_all(".dream-item.unaffordable")
+        log("Expensive items marked unaffordable", len(unaffordable_items) > 0, f"Unaffordable: {len(unaffordable_items)}")
+
+        # ─── Test 29: Dream Machine - Progress bars render ───
+        progress_bars = await page.query_selector_all(".dream-progress-fill")
+        log("Progress bars render in items", len(progress_bars) == 17, f"Bars: {len(progress_bars)}")
+
+        # ─── Test 30: Dream Machine - Result header with coin image ───
+        header_div = await page.query_selector("#dream-header")
+        header_html = await header_div.inner_html() if header_div else ""
+        has_header_img = "<img" in header_html
+        has_headline = "dream-headline" in header_html
+        log("Dream result header renders", has_header_img and has_headline, f"Image: {has_header_img}, Headline: {has_headline}")
+
+        # ─── Test 31: Dream Machine - Summary shows investment & total ───
+        summary_html = await page.inner_html("#dream-summary") if await page.query_selector("#dream-summary") else ""
+        has_investment = any(x in summary_html for x in ["Investment", "Yatırım"])
+        has_total = any(x in summary_html for x in ["Total", "Eline"])
+        log("Dream summary shows investment & total", has_investment and has_total, f"Investment: {has_investment}, Total: {has_total}")
+
+        # ─── Test 32: Dream Machine - ATH button exists ───
+        ath_btn = await page.query_selector("#dream-ath-btn")
+        log("ATH button exists", ath_btn is not None)
+
+        # ─── Test 33: Dream Machine - Mode toggle button exists ───
+        mode_btn = await page.query_selector("#dream-mode-toggle")
+        mode_text = await mode_btn.text_content() if mode_btn else ""
+        log("Mode toggle button exists", mode_btn is not None, f"Text: {mode_text}")
+
+        # ─── Test 34: Dream Machine - 'You can buy' label in items ───
+        items_html = await page.inner_html("#dream-items") if await page.query_selector("#dream-items") else ""
+        has_buy_label = any(x in items_html for x in ["you can buy", "alabileceklerin"])
+        log("Items grid has 'you can buy' label", has_buy_label)
+
+        # ─── Test 35: Console errors ───
         print("\n--- Console Errors ---")
         critical_errors = [e for e in console_errors if "TypeError" in e or "ReferenceError" in e or "SyntaxError" in e]
         log("No critical JS errors", len(critical_errors) == 0,
             f"Errors: {critical_errors[:3]}" if critical_errors else "Clean")
 
-        # ─── Test 21: Screenshot ───
+        # ─── Test 36: Screenshot ───
         print("\n--- Screenshot ---")
         await page.screenshot(path="c:/Users/User/Desktop/kry-fin/dashboard_test.png", full_page=True)
         log("Screenshot saved", True, "dashboard_test.png")

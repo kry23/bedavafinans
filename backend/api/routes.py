@@ -11,6 +11,7 @@ from backend.services.binance import fetch_klines, coingecko_id_to_binance, fetc
 from backend.services.fear_greed import fetch_fear_greed
 from backend.services.whale_tracker import fetch_whale_transactions, enrich_whale_data
 from backend.services.news_sentiment import fetch_crypto_news, get_overall_sentiment
+from backend.services.social_sentiment import get_social_overview, get_coin_social
 from backend.analysis.indicators import ohlc_to_dataframe, klines_to_dataframe, compute_all_indicators
 from backend.analysis.signals import generate_composite_signal
 from backend.analysis.volume_anomaly import scan_all_anomalies
@@ -283,6 +284,18 @@ async def sentiment():
         "fear_greed": fg,
         "recent_news": (news or [])[:10],
     }
+
+
+@router.get("/social/overview")
+async def social_overview():
+    """Social sentiment overview - trending topics + community stats."""
+    return await get_social_overview()
+
+
+@router.get("/social/coin/{coin_id}")
+async def social_coin(coin_id: str):
+    """Social data for a specific coin."""
+    return await get_coin_social(coin_id)
 
 
 @router.get("/coin/{coin_id}")

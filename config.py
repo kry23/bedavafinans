@@ -22,6 +22,7 @@ CACHE_TTL_FEAR_GREED = 3600    # 1 hour
 CACHE_TTL_DERIVATIVES = 300    # 5 min
 CACHE_TTL_WHALES = 300         # 5 min
 CACHE_TTL_NEWS = 900           # 15 min
+CACHE_TTL_SOCIAL = 600         # 10 min (social sentiment)
 
 # === Technical Analysis Parameters ===
 RSI_PERIOD = 14
@@ -91,6 +92,34 @@ NEGATIVE_KEYWORDS = [
     "regulation", "lawsuit", "fraud", "scam", "sell", "liquidation",
     "fear", "decline", "loss", "warning", "risk",
 ]
+
+# === Social Sentiment ===
+LUNARCRUSH_API_KEY = ""  # Free tier - get from lunarcrush.com/developers
+SOCIAL_TRENDING_COUNT = 20  # Number of trending topics to fetch
+
+# CoinGecko ID → LunarCrush topic slug mapping
+LUNARCRUSH_TOPIC_MAP = {
+    "bitcoin": "bitcoin",
+    "ethereum": "ethereum",
+    "binancecoin": "bnb",
+    "solana": "solana",
+    "ripple": "xrp",
+    "cardano": "cardano",
+    "dogecoin": "dogecoin",
+    "avalanche-2": "avalanche",
+    "polkadot": "polkadot",
+    "chainlink": "chainlink",
+    "tron": "tron",
+    "shiba-inu": "shiba-inu",
+    "litecoin": "litecoin",
+    "uniswap": "uniswap",
+    "near": "near-protocol",
+    "sui": "sui",
+    "aptos": "aptos",
+    "arbitrum": "arbitrum",
+    "optimism": "optimism",
+    "aave": "aave",
+}
 
 # === Server ===
 HOST = "0.0.0.0"

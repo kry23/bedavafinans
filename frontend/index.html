@@ -16,15 +16,19 @@
     <meta name="twitter:title" content="BedavaFinans - Kripto Sinyal Paneli">
     <meta name="twitter:description" content="Top 50 coin icin 4 katmanli bilesik sinyal sistemi, gercek zamanli piyasa verileri.">
     <link rel="canonical" href="https://bedavafinans.info">
+    <link rel="icon" type="image/svg+xml" href="/static/icons/icon-192.svg">
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>BedavaFinans - Kripto Sinyal Paneli</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://unpkg.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
     <link rel="stylesheet" href="/static/css/custom.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -35,6 +39,7 @@
             }
         }
     </script>
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js" defer></script>
 </head>
 <body class="min-h-screen">
 
@@ -45,7 +50,7 @@
                 <h1 class="text-lg font-bold" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">
                     BedavaFinans
                 </h1>
-                <div id="market-score-ring" class="ml-2"></div>
+                <div id="market-score-ring" class="ml-2" style="min-width:64px;min-height:64px"></div>
             </div>
             <div class="header-controls" id="header-controls">
                 <span id="loading-indicator" style="display:none;color:var(--accent-blue)">
@@ -73,7 +78,7 @@
     <main class="max-w-[1440px] mx-auto px-4 py-4 flex flex-col gap-4">
 
         <!-- ═══ ROW 1: Market Overview Cards ═══ -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 overview-grid">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 overview-grid" style="min-height:120px">
             <div class="card">
                 <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="total-market-cap">Toplam Piyasa Değeri</div>
                 <div id="total-mcap" class="text-xl font-bold">—</div>
@@ -87,7 +92,7 @@
                 <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="btc-dominance-label">BTC Hakimiyeti</div>
                 <div id="btc-dominance" class="text-xl font-bold">—</div>
             </div>
-            <div class="card">
+            <div class="card" style="min-height:110px">
                 <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="fear-greed-label">Korku & Açgözlülük</div>
                 <div id="fear-greed-gauge"></div>
                 <div id="fear-greed-history" class="mt-2"></div>
@@ -95,10 +100,10 @@
         </div>
 
         <!-- ═══ ROW 2: Whale Ticker ═══ -->
-        <div id="whale-ticker"></div>
+        <div id="whale-ticker" style="min-height:36px"></div>
 
         <!-- ═══ ROW 3: Signals + Derivatives ═══ -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" style="min-height:420px">
             <div class="lg:col-span-2 card" style="padding:0;overflow:hidden">
                 <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
                     <h2 class="font-semibold text-sm" data-i18n="trading-signals">İşlem Sinyalleri (Top 15)</h2>
@@ -185,8 +190,85 @@
             </div>
         </div>
 
-        <!-- ═══ ROW 5: Full Coin Table ═══ -->
-        <div class="card" style="padding:0;overflow:hidden">
+        <!-- ═══ ROW 5: Social Buzz ═══ -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="card" style="padding:0;overflow:hidden">
+                <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
+                    <h2 class="font-semibold text-sm" data-i18n="social-buzz">Piyasa Buzz</h2>
+                    <span style="font-size:11px;color:var(--text-secondary)" data-i18n="social-buzz-sub">Hacim & Momentum</span>
+                </div>
+                <div id="social-buzz-list" class="px-4 py-2" style="max-height:320px;overflow-y:auto">
+                    <div style="color:var(--text-secondary);font-size:12px" data-i18n="loading">Yükleniyor...</div>
+                </div>
+            </div>
+
+            <div class="card" style="padding:0;overflow:hidden">
+                <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
+                    <h2 class="font-semibold text-sm" data-i18n="trending-social">Trending</h2>
+                    <span style="font-size:11px;color:var(--text-secondary)" data-i18n="trending-social-sub">CoinGecko</span>
+                </div>
+                <div id="trending-social-list" class="px-4 py-2" style="max-height:320px;overflow-y:auto">
+                    <div style="color:var(--text-secondary);font-size:12px" data-i18n="no-lunarcrush">Trending verisi yükleniyor...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ ROW 6: Dream Machine ═══ -->
+        <div class="card dream-machine-card" style="padding:0;overflow:hidden">
+            <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
+                <div class="flex items-center gap-2">
+                    <span style="font-size:20px">&#x1F4AD;</span>
+                    <h2 class="font-semibold text-sm" data-i18n="dream-machine">Hayal Kurma Makinesi</h2>
+                </div>
+                <span style="font-size:11px;color:var(--text-secondary)" data-i18n="dream-machine-sub">Yatırımını hayal et</span>
+            </div>
+            <div class="px-4 py-4">
+                <!-- Input Row -->
+                <div class="dream-inputs">
+                    <div class="dream-input-group">
+                        <label for="dream-coin" style="font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:block" data-i18n="dream-select-coin">Coin Seç</label>
+                        <select id="dream-coin" class="dream-select" onchange="calculateDream()" aria-label="Coin Seç">
+                            <option value="">—</option>
+                        </select>
+                    </div>
+                    <div class="dream-input-group">
+                        <label style="font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:block">
+                            <span data-i18n="dream-invest-amount">Yatırım Tutarı ($)</span>
+                            <button id="dream-mode-toggle" onclick="toggleDreamInputMode()" class="dream-mode-btn" title="$ / Coin">$</button>
+                        </label>
+                        <input type="number" id="dream-amount" class="dream-input" placeholder="1000" min="0.000001" step="any" oninput="calculateDream()">
+                    </div>
+                    <div class="dream-input-group">
+                        <label style="font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:block" data-i18n="dream-target">Hedef Yükseliş (%)</label>
+                        <input type="number" id="dream-target" class="dream-input" placeholder="100" min="1" oninput="calculateDream()">
+                    </div>
+                </div>
+
+                <!-- Quick Percentage Buttons -->
+                <div class="dream-quick-pcts">
+                    <button class="dream-pct-btn" onclick="setDreamTarget(25)">+25%</button>
+                    <button class="dream-pct-btn" onclick="setDreamTarget(50)">+50%</button>
+                    <button class="dream-pct-btn" onclick="setDreamTarget(100)">+100%</button>
+                    <button class="dream-pct-btn" onclick="setDreamTarget(250)">+250%</button>
+                    <button class="dream-pct-btn" onclick="setDreamTarget(500)">+500%</button>
+                    <button class="dream-pct-btn" onclick="setDreamTarget(1000)">+1000%</button>
+                    <button class="dream-pct-btn dream-ath-btn" id="dream-ath-btn" onclick="setDreamATH()" data-i18n="dream-to-ath">ATH'ye</button>
+                </div>
+
+                <!-- Results -->
+                <div id="dream-results" style="display:none">
+                    <!-- Result Header -->
+                    <div id="dream-header" class="dream-result-header"></div>
+                    <!-- Summary -->
+                    <div id="dream-summary" class="dream-summary"></div>
+                    <!-- Items Grid -->
+                    <div id="dream-items" class="dream-items-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ ROW 7: Full Coin Table ═══ -->
+        <div class="card" style="padding:0;overflow:hidden;min-height:200px">
             <div class="px-4 py-3 flex items-center justify-between flex-wrap gap-2" style="border-bottom:1px solid var(--border)">
                 <div class="flex items-center gap-2">
                     <h2 class="font-semibold text-sm" data-i18n="all-coins">Tüm Coinler (Top 50)</h2>
@@ -227,7 +309,7 @@
 
     <!-- ═══ FOOTER ═══ -->
     <footer class="text-center py-4" style="color:var(--text-secondary);font-size:11px;border-top:1px solid var(--border)">
-        <span data-i18n="footer-text">BedavaFinans Sinyal Paneli</span> &middot; <span data-i18n="footer-data">Veri:</span> CoinGecko, Binance, Alternative.me, CryptoCompare &middot; <span data-i18n="footer-refresh">Otomatik yenileme: 2 dk</span>
+        <span data-i18n="footer-text">BedavaFinans Sinyal Paneli</span> &middot; <span data-i18n="footer-data">Veri:</span> CoinGecko, Binance, Alternative.me, CryptoCompare, LunarCrush &middot; <span data-i18n="footer-refresh">Otomatik yenileme: 2 dk</span>
     </footer>
 
     <!-- Coin Detail Modal -->
@@ -243,17 +325,19 @@
     <!-- Toast container -->
     <div class="toast-container" id="toast-container"></div>
 
-    <!-- Scripts (order matters: i18n before app) -->
-    <script src="/static/js/utils.js"></script>
-    <script src="/static/js/i18n.js"></script>
-    <script src="/static/js/api.js"></script>
-    <script src="/static/js/charts.js"></script>
-    <script src="/static/js/signals.js"></script>
-    <script src="/static/js/widgets.js"></script>
-    <script src="/static/js/app.js"></script>
+    <!-- Scripts (order matters: i18n before app; defer preserves order) -->
+    <script src="/static/js/utils.js" defer></script>
+    <script src="/static/js/i18n.js" defer></script>
+    <script src="/static/js/api.js" defer></script>
+    <script src="/static/js/charts.js" defer></script>
+    <script src="/static/js/signals.js" defer></script>
+    <script src="/static/js/widgets.js" defer></script>
+    <script src="/static/js/app.js" defer></script>
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').catch(() => {});
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
+            });
         }
     </script>
 

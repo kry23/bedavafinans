@@ -119,6 +119,12 @@ function renderDynamicContent() {
     if (window._derivativesData) renderDerivatives(window._derivativesData);
     if (window._sentimentData) renderNewsSentiment('news-sentiment', window._sentimentData);
     if (window._overviewData) renderOverviewWidgets(window._overviewData);
+    if (window._socialData) {
+        renderSocialBuzz('social-buzz-list', window._socialData.market_buzz || []);
+        if (window._socialData.has_lunarcrush) renderTrendingSocial('trending-social-list', window._socialData.trending || []);
+    }
+    populateDreamCoinSelect();
+    calculateDream();
 }
 
 async function loadAll() {
@@ -134,6 +140,7 @@ async function loadAll() {
         loadDerivatives(),
         loadWhales(),
         loadSentiment(),
+        loadSocial(),
         loadChart(selectedCoin),
     ]);
 
@@ -156,6 +163,7 @@ function startAutoRefresh() {
             loadDerivatives(),
             loadWhales(),
             loadSentiment(),
+            loadSocial(),
         ]);
         updateTimestamp();
         countdownSeconds = REFRESH_INTERVAL / 1000;
@@ -239,6 +247,7 @@ async function loadCoins() {
     if (!coins) return;
     allCoins = coins;
     renderCoinTable(coins);
+    populateDreamCoinSelect();
     checkPriceAlerts();
 }
 
@@ -522,6 +531,17 @@ async function loadSentiment() {
     renderNewsSentiment('news-sentiment', data);
 }
 
+// ─── Social Buzz ───
+async function loadSocial() {
+    const data = await getSocialOverview();
+    if (!data) return;
+    window._socialData = data;
+    renderSocialBuzz('social-buzz-list', data.market_buzz || []);
+    if (data.has_lunarcrush && data.trending && data.trending.length > 0) {
+        renderTrendingSocial('trending-social-list', data.trending);
+    }
+}
+
 // ─── Modal ───
 async function openCoinModal(coinId, event) {
     if (event) event.stopPropagation();
@@ -697,6 +717,194 @@ function promptPriceAlert(coinId, event) {
     // Request notification permission
     if (Notification.permission === 'default') {
         Notification.requestPermission();
+    }
+}
+
+// ─── Dream Machine ───
+let dreamInputMode = 'usd'; // 'usd' or 'coin'
+
+const DREAM_ITEMS = [
+    { key: 'dream-kebab',   emoji: '\u{1F356}', price: 5 },
+    { key: 'dream-netflix', emoji: '\u{1F3AC}', price: 15 },
+    { key: 'dream-pizza',   emoji: '\u{1F355}', price: 20 },
+    { key: 'dream-spotify', emoji: '\u{1F3B5}', price: 120 },
+    { key: 'dream-sneakers',emoji: '\u{1F45F}', price: 160 },
+    { key: 'dream-airpods', emoji: '\u{1F3A7}', price: 250 },
+    { key: 'dream-ps5',     emoji: '\u{1F3AE}', price: 500 },
+    { key: 'dream-iphone',  emoji: '\u{1F4F1}', price: 1200 },
+    { key: 'dream-macbook', emoji: '\u{1F4BB}', price: 2000 },
+    { key: 'dream-rolex',   emoji: '\u{231A}',  price: 10000 },
+    { key: 'dream-tesla',   emoji: '\u{1F697}', price: 35000 },
+    { key: 'dream-porsche', emoji: '\u{1F3CE}',  price: 120000 },
+    { key: 'dream-apartment', emoji: '\u{1F3E2}', price: 150000 },
+    { key: 'dream-lambo',   emoji: '\u{1F3CE}',  price: 300000 },
+    { key: 'dream-villa',   emoji: '\u{1F3D6}',  price: 500000 },
+    { key: 'dream-yacht',   emoji: '\u{1F6F3}',  price: 1000000 },
+    { key: 'dream-jet',     emoji: '\u{2708}',   price: 10000000 },
+];
+
+function populateDreamCoinSelect() {
+    const select = document.getElementById('dream-coin');
+    if (!select || !allCoins.length) return;
+    const currentVal = select.value;
+    const options = allCoins.map(c =>
+        `<option value="${c.id}" ${c.id === currentVal ? 'selected' : ''}>${c.name} (${c.symbol.toUpperCase()}) - ${formatCurrency(c.current_price)}</option>`
+    ).join('');
+    select.innerHTML = `<option value="">— ${t('dream-select-coin')} —</option>` + options;
+}
+
+function setDreamTarget(pct) {
+    const input = document.getElementById('dream-target');
+    if (input) { input.value = pct; }
+    document.querySelectorAll('.dream-pct-btn:not(.dream-ath-btn)').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === `+${pct}%`);
+    });
+    document.getElementById('dream-ath-btn')?.classList.remove('active');
+    calculateDream();
+}
+
+function toggleDreamInputMode() {
+    dreamInputMode = dreamInputMode === 'usd' ? 'coin' : 'usd';
+    const btn = document.getElementById('dream-mode-toggle');
+    const label = btn?.previousElementSibling || btn?.closest('label')?.querySelector('[data-i18n]');
+    const amountInput = document.getElementById('dream-amount');
+
+    if (btn) btn.textContent = dreamInputMode === 'usd' ? '$' : '🪙';
+
+    // Update label text
+    const labelSpan = document.querySelector('[data-i18n="dream-invest-amount"], [data-i18n="dream-invest-coins"]');
+    if (labelSpan) {
+        labelSpan.setAttribute('data-i18n', dreamInputMode === 'usd' ? 'dream-invest-amount' : 'dream-invest-coins');
+        labelSpan.textContent = t(dreamInputMode === 'usd' ? 'dream-invest-amount' : 'dream-invest-coins');
+    }
+
+    if (amountInput) {
+        amountInput.placeholder = dreamInputMode === 'usd' ? '1000' : '0.5';
+        amountInput.value = '';
+    }
+    calculateDream();
+}
+
+function setDreamATH() {
+    const coinId = document.getElementById('dream-coin')?.value;
+    if (!coinId) return;
+    const coin = allCoins.find(c => c.id === coinId);
+    if (!coin || !coin.ath || !coin.current_price) return;
+
+    const athPct = ((coin.ath / coin.current_price) - 1) * 100;
+    if (athPct <= 0) return; // Already at or above ATH
+
+    const input = document.getElementById('dream-target');
+    if (input) input.value = athPct.toFixed(1);
+
+    document.querySelectorAll('.dream-pct-btn:not(.dream-ath-btn)').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('dream-ath-btn')?.classList.add('active');
+
+    calculateDream();
+}
+
+function calculateDream() {
+    const coinId = document.getElementById('dream-coin')?.value;
+    const rawAmount = parseFloat(document.getElementById('dream-amount')?.value);
+    const targetPct = parseFloat(document.getElementById('dream-target')?.value);
+    const resultsDiv = document.getElementById('dream-results');
+    const headerDiv = document.getElementById('dream-header');
+    const summaryDiv = document.getElementById('dream-summary');
+    const itemsDiv = document.getElementById('dream-items');
+
+    if (!coinId || !rawAmount || !targetPct || rawAmount <= 0 || targetPct <= 0) {
+        if (resultsDiv) resultsDiv.style.display = 'none';
+        return;
+    }
+
+    const coin = allCoins.find(c => c.id === coinId);
+    if (!coin) return;
+
+    const currentPrice = coin.current_price;
+    const targetPrice = currentPrice * (1 + targetPct / 100);
+
+    // Calculate based on input mode
+    let investmentUSD, coinsBought;
+    if (dreamInputMode === 'coin') {
+        coinsBought = rawAmount;
+        investmentUSD = rawAmount * currentPrice;
+    } else {
+        investmentUSD = rawAmount;
+        coinsBought = rawAmount / currentPrice;
+    }
+
+    const futureValue = coinsBought * targetPrice;
+    const profit = futureValue - investmentUSD;
+
+    if (resultsDiv) resultsDiv.style.display = 'block';
+
+    // Header with coin image and headline
+    if (headerDiv) {
+        const headline = t('dream-headline').replace('{coin}', coin.name);
+        const subline = t('dream-subline')
+            .replace('{amount}', formatCurrency(investmentUSD))
+            .replace('{coins}', coinsBought < 1 ? coinsBought.toFixed(6) : coinsBought.toFixed(4))
+            .replace('{symbol}', coin.symbol.toUpperCase());
+        headerDiv.innerHTML = `
+            <img src="${coin.image}" width="36" height="36" alt="${escapeHtml(coin.symbol)}" loading="lazy">
+            <div>
+                <div class="dream-headline">${escapeHtml(headline)}</div>
+                <div class="dream-subline">${escapeHtml(subline)}</div>
+            </div>
+        `;
+    }
+
+    // Summary (6 items: current price, target price, investment, coins, profit, total)
+    if (summaryDiv) {
+        summaryDiv.innerHTML = `
+            <div class="dream-summary-item">
+                <div class="dream-summary-label">${t('dream-current-price')}</div>
+                <div class="dream-summary-value" style="color:var(--text-primary)">${formatCurrency(currentPrice)}</div>
+            </div>
+            <div class="dream-summary-item">
+                <div class="dream-summary-label">${t('dream-target-price')}</div>
+                <div class="dream-summary-value" style="color:var(--accent-purple)">${formatCurrency(targetPrice)}</div>
+            </div>
+            <div class="dream-summary-item">
+                <div class="dream-summary-label">${t('dream-investment')}</div>
+                <div class="dream-summary-value" style="color:var(--text-primary)">${formatCurrency(investmentUSD)}</div>
+            </div>
+            <div class="dream-summary-item">
+                <div class="dream-summary-label">${t('dream-coins-bought')}</div>
+                <div class="dream-summary-value" style="color:var(--accent-blue)">${coinsBought < 1 ? coinsBought.toFixed(6) : coinsBought.toFixed(2)}</div>
+            </div>
+            <div class="dream-summary-item">
+                <div class="dream-summary-label">${t('dream-profit')}</div>
+                <div class="dream-summary-value" style="color:var(--accent-green)">+${formatCurrency(profit)}</div>
+            </div>
+            <div class="dream-summary-item">
+                <div class="dream-summary-label">${t('dream-total')}</div>
+                <div class="dream-summary-value" style="color:var(--accent-green)">${formatCurrency(futureValue)}</div>
+            </div>
+        `;
+    }
+
+    // Items grid
+    if (itemsDiv) {
+        const youCanBuyLabel = `<div style="grid-column:1/-1;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px">${t('dream-you-can-buy')}</div>`;
+        itemsDiv.innerHTML = youCanBuyLabel + DREAM_ITEMS.map(item => {
+            const canAfford = profit >= item.price;
+            const count = Math.floor(profit / item.price);
+            const progressPct = Math.min((profit / item.price) * 100, 100);
+            const barColor = canAfford ? 'var(--accent-green)' : 'var(--accent-red)';
+
+            return `
+                <div class="dream-item ${canAfford ? 'affordable' : 'unaffordable'}">
+                    ${canAfford && count > 0 ? `<div class="dream-item-count">${count}${t('dream-x-count')}</div>` : ''}
+                    <div class="dream-item-emoji">${item.emoji}</div>
+                    <div class="dream-item-name">${t(item.key)}</div>
+                    <div class="dream-item-price">${formatCurrency(item.price)}</div>
+                    <div class="dream-progress-bar">
+                        <div class="dream-progress-fill" style="width:${progressPct}%;background:${barColor}"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 }
 

@@ -1,8 +1,8 @@
-"""Whale activity tracker using Blockchair and Binance large trades."""
+"""Whale activity tracker using blockchain.info latest blocks."""
 
 import httpx
 
-from config import BLOCKCHAIR_BASE_URL, CACHE_TTL_WHALES
+from config import CACHE_TTL_WHALES
 from backend.cache.memory_cache import cache
 
 _client: httpx.AsyncClient | None = None
@@ -16,35 +16,41 @@ def _get_client() -> httpx.AsyncClient:
 
 
 async def fetch_whale_transactions() -> list[dict] | None:
-    """Fetch recent large Bitcoin transactions (>100 BTC) from Blockchair."""
+    """Fetch recent large Bitcoin transactions (>50 BTC) from blockchain.info."""
 
     async def _fetch():
         client = _get_client()
         try:
-            resp = await client.get(
-                f"{BLOCKCHAIR_BASE_URL}/bitcoin/transactions",
-                params={
-                    "s": "output_total(desc)",
-                    "limit": 10,
-                },
-            )
+            # Get latest block hash
+            resp = await client.get("https://blockchain.info/q/latesthash")
             resp.raise_for_status()
-            raw = resp.json()
-            txs = raw.get("data", [])
+            latest_hash = resp.text.strip()
+
+            # Get block data with transactions
+            resp2 = await client.get(
+                f"https://blockchain.info/rawblock/{latest_hash}",
+                params={"cors": "true"},
+            )
+            resp2.raise_for_status()
+            block = resp2.json()
+
             results = []
-            for tx in txs:
-                value_btc = tx.get("output_total", 0) / 1e8
-                if value_btc >= 100:
+            for tx in block.get("tx", []):
+                total_out = sum(o.get("value", 0) for o in tx.get("out", []))
+                value_btc = total_out / 1e8
+                if value_btc >= 50:
                     results.append({
                         "hash": tx.get("hash", "")[:16] + "...",
                         "value_btc": round(value_btc, 2),
-                        "value_usd": None,  # Will be enriched with current price
+                        "value_usd": None,
                         "time": tx.get("time", ""),
-                        "block_id": tx.get("block_id"),
+                        "block_id": block.get("height"),
                     })
-            return results
+
+            # Sort by value descending, take top 10
+            results.sort(key=lambda x: -x["value_btc"])
+            return results[:10] if results else _get_fallback_whale_data()
         except Exception:
-            # Fallback: return simulated data based on known patterns
             return _get_fallback_whale_data()
 
     return await cache.get_or_fetch("whale_txs", CACHE_TTL_WHALES, _fetch)

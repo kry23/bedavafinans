@@ -5,7 +5,7 @@ import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
@@ -21,6 +21,7 @@ async def periodic_refresh():
     from backend.services.coingecko import fetch_top_coins, fetch_global
     from backend.services.fear_greed import fetch_fear_greed
     from backend.services.news_sentiment import get_overall_sentiment
+    from backend.services.social_sentiment import get_social_overview
 
     while True:
         try:
@@ -28,6 +29,7 @@ async def periodic_refresh():
             await fetch_global()
             await fetch_fear_greed(limit=30)
             await get_overall_sentiment()
+            await get_social_overview()
         except Exception as e:
             print(f"[BedavaFinans] Refresh error: {e}")
         await asyncio.sleep(CACHE_TTL_MARKET_DATA)
@@ -47,6 +49,22 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="BedavaFinans - Crypto Signal Dashboard", lifespan=lifespan)
+
+
+@app.middleware("http")
+async def add_cache_headers(request: Request, call_next):
+    """Add cache-control headers for static assets."""
+    response = await call_next(request)
+    path = request.url.path
+    if path.startswith("/static/"):
+        if path.endswith((".css", ".js")):
+            response.headers["Cache-Control"] = "public, max-age=3600, stale-while-revalidate=86400"
+        elif path.endswith((".png", ".svg", ".jpg", ".jpeg", ".webp", ".ico")):
+            response.headers["Cache-Control"] = "public, max-age=86400, immutable"
+        elif path.endswith((".woff", ".woff2", ".ttf")):
+            response.headers["Cache-Control"] = "public, max-age=604800, immutable"
+    return response
+
 
 # Mount frontend static files
 frontend_dir = Path(__file__).parent / "frontend"

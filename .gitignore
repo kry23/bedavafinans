@@ -36,3 +36,7 @@ node_modules/
 
 # Logs
 *.log
+
+# Claude Code
+.claude/
+crypto-mcp-tools.txt
