@@ -1,3 +1,8 @@
+# fly.toml app configuration file generated for bedavafinans on 2026-02-20T15:19:36+03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
 app = 'bedavafinans'
 primary_region = 'ams'
 
@@ -8,7 +13,7 @@ primary_region = 'ams'
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 1
+  min_machines_running = 0
 
 [checks]
   [checks.health]
@@ -17,3 +22,8 @@ primary_region = 'ams'
     interval = '30s'
     timeout = '5s'
     path = '/api/health'
+
+[[vm]]
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 256
