@@ -156,16 +156,44 @@
 
         <!-- ═══ ROW 4: Chart + Side Panels ═══ -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div class="lg:col-span-2 card" style="padding:0;overflow:hidden">
-                <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
-                    <h2 id="chart-title" class="font-semibold text-sm">Bitcoin (BTC)</h2>
-                    <div class="flex gap-2" style="font-size:10px">
-                        <span style="color:#f97316">━ <span data-i18n="chart-legend-ema9">EMA 9</span></span>
-                        <span style="color:#8b5cf6">━ <span data-i18n="chart-legend-ema21">EMA 21</span></span>
-                        <span style="color:rgba(59,130,246,0.5)">┈ <span data-i18n="chart-legend-bb">BB</span></span>
+            <div class="lg:col-span-2 card chart-card" id="chart-card" style="padding:0;overflow:hidden;display:flex;flex-direction:column">
+                <!-- Chart Toolbar -->
+                <div class="chart-toolbar">
+                    <div class="chart-toolbar-left">
+                        <h2 id="chart-title" class="font-semibold text-sm" style="margin:0;white-space:nowrap">Bitcoin (BTC)</h2>
+                        <div class="chart-type-group">
+                            <button class="chart-ctrl-btn active" data-chart-type="candlestick" onclick="switchChartType('candlestick')" title="Candlestick">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="3" y="2" width="2" height="10" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="3" y="4" width="2" height="6" rx="0.5" fill="currentColor"/><rect x="9" y="1" width="2" height="12" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="9" y="3" width="2" height="7" rx="0.5" fill="currentColor"/></svg>
+                            </button>
+                            <button class="chart-ctrl-btn" data-chart-type="line" onclick="switchChartType('line')" title="Line">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 10L4 6L7 8L13 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <button class="chart-ctrl-btn" data-chart-type="area" onclick="switchChartType('area')" title="Area">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 10L4 6L7 8L13 2V13H1V10Z" fill="currentColor" opacity="0.2"/><path d="M1 10L4 6L7 8L13 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                        <div class="chart-divider"></div>
+                        <div class="chart-interval-group">
+                            <button class="chart-ctrl-btn" data-interval="1h" onclick="switchChartInterval('1h')">1H</button>
+                            <button class="chart-ctrl-btn active" data-interval="4h" onclick="switchChartInterval('4h')">4H</button>
+                            <button class="chart-ctrl-btn" data-interval="1d" onclick="switchChartInterval('1d')">1D</button>
+                            <button class="chart-ctrl-btn" data-interval="1w" onclick="switchChartInterval('1w')">1W</button>
+                        </div>
+                    </div>
+                    <div class="chart-toolbar-right">
+                        <div class="chart-indicator-group">
+                            <button class="chart-indicator-btn active" data-indicator="ema" onclick="toggleChartIndicator('ema')" data-i18n="chart-ind-ema">EMA</button>
+                            <button class="chart-indicator-btn active" data-indicator="bb" onclick="toggleChartIndicator('bb')" data-i18n="chart-ind-bb">BB</button>
+                            <button class="chart-indicator-btn active" data-indicator="vol" onclick="toggleChartIndicator('vol')" data-i18n="chart-ind-vol">VOL</button>
+                        </div>
+                        <div class="chart-divider"></div>
+                        <button class="chart-ctrl-btn" onclick="toggleChartFullscreen()" id="chart-fullscreen-btn" data-i18n-title="chart-fullscreen" title="Tam Ekran">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 5V1H5M9 1H13V5M13 9V13H9M5 13H1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
                     </div>
                 </div>
-                <div id="chart-container" style="height:400px"></div>
+                <!-- Chart -->
+                <div id="chart-container" style="flex:1;min-height:350px"></div>
             </div>
 
             <div class="flex flex-col gap-4 side-panels">

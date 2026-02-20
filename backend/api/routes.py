@@ -219,17 +219,31 @@ async def get_coin_signal(coin_id: str):
 
 
 @router.get("/ohlc/{coin_id}")
-async def get_ohlc(coin_id: str, days: int = 14):
-    """OHLC chart data for a coin."""
+async def get_ohlc(coin_id: str, interval: str = "4h", days: int = 14):
+    """OHLC chart data for a coin.
+
+    Supported intervals: 1h, 4h, 1d, 1w.
+    """
+    # Map interval to Binance format and appropriate limit/days
+    interval_config = {
+        "1h": {"binance": "1h", "limit": 168, "cg_days": 7},
+        "4h": {"binance": "4h", "limit": 180, "cg_days": 30},
+        "1d": {"binance": "1d", "limit": 365, "cg_days": 365},
+        "1w": {"binance": "1w", "limit": 104, "cg_days": 365},
+    }
+    cfg = interval_config.get(interval, interval_config["4h"])
+
     # Try Binance first for higher resolution
     binance_symbol = coingecko_id_to_binance(coin_id)
     if binance_symbol:
-        klines = await fetch_klines(binance_symbol, interval="4h", limit=100)
+        klines = await fetch_klines(
+            binance_symbol, interval=cfg["binance"], limit=cfg["limit"]
+        )
         if klines:
             return klines
 
     # Fallback to CoinGecko
-    ohlc = await fetch_ohlc(coin_id, days=days)
+    ohlc = await fetch_ohlc(coin_id, days=cfg["cg_days"])
     if ohlc:
         return [
             {"time": int(candle[0] / 1000), "open": candle[1], "high": candle[2], "low": candle[3], "close": candle[4]}

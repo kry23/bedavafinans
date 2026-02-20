@@ -36,6 +36,10 @@ const TRANSLATIONS = {
         'chart-legend-ema9': 'EMA 9',
         'chart-legend-ema21': 'EMA 21',
         'chart-legend-bb': 'BB',
+        'chart-ind-ema': 'EMA',
+        'chart-ind-bb': 'BB',
+        'chart-ind-vol': 'VOL',
+        'chart-fullscreen': 'Tam Ekran',
 
         // Top Movers
         'top-movers': 'En Çok Değişenler',
@@ -232,6 +236,10 @@ const TRANSLATIONS = {
         'chart-legend-ema9': 'EMA 9',
         'chart-legend-ema21': 'EMA 21',
         'chart-legend-bb': 'BB',
+        'chart-ind-ema': 'EMA',
+        'chart-ind-bb': 'BB',
+        'chart-ind-vol': 'VOL',
+        'chart-fullscreen': 'Fullscreen',
 
         'top-movers': 'Top Movers',
         'gainers': 'Gainers',

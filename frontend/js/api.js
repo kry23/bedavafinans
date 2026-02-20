@@ -33,8 +33,8 @@ async function getCoinSignal(coinId) {
     return await fetchJSON(`/signals/${coinId}`);
 }
 
-async function getOHLC(coinId) {
-    return await fetchJSON(`/ohlc/${coinId}`);
+async function getOHLC(coinId, interval = '4h') {
+    return await fetchJSON(`/ohlc/${coinId}?interval=${interval}`);
 }
 
 async function getVolumeAnomalies() {

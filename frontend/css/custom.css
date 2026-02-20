@@ -744,6 +744,140 @@ body, .card, header, footer, .data-table th, .data-table td,
     .dream-items-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ═══ Chart Toolbar ═══ */
+.chart-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+.chart-toolbar-left,
+.chart-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.chart-type-group,
+.chart-interval-group,
+.chart-indicator-group {
+    display: flex;
+    gap: 2px;
+}
+.chart-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    flex-shrink: 0;
+}
+.chart-ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 6px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.chart-ctrl-btn:hover {
+    background: var(--overlay-white);
+    color: var(--text-primary);
+}
+.chart-ctrl-btn.active {
+    background: rgba(59, 130, 246, 0.12);
+    color: var(--accent-blue);
+    border-color: rgba(59, 130, 246, 0.25);
+}
+.chart-indicator-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    padding: 0 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.chart-indicator-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+}
+.chart-indicator-btn.active {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: var(--accent-blue);
+}
+
+/* Chart card fill container */
+.chart-card {
+    min-height: 450px;
+}
+.chart-card #chart-container {
+    flex: 1;
+    min-height: 0;
+}
+
+/* Chart Fullscreen */
+.chart-fullscreen {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 200 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    max-width: none !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+}
+.chart-fullscreen #chart-container {
+    min-height: 0 !important;
+}
+body.chart-fs-open {
+    overflow: hidden;
+}
+
+@media (max-width: 640px) {
+    .chart-toolbar {
+        padding: 6px 8px;
+        gap: 4px;
+    }
+    .chart-toolbar-left h2 {
+        display: none;
+    }
+    .chart-divider {
+        display: none;
+    }
+    .chart-ctrl-btn {
+        min-width: 26px;
+        height: 26px;
+        font-size: 10px;
+    }
+    .chart-indicator-btn {
+        height: 22px;
+        padding: 0 6px;
+        font-size: 9px;
+    }
+    .chart-card {
+        min-height: 350px;
+    }
+}
+
 /* ═══ Funding Rate Arbitrage ═══ */
 .fr-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
 .fr-table td { font-size: 12px; padding: 8px 10px; }

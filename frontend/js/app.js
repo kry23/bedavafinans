@@ -6,6 +6,7 @@ let countdownTimer = null;
 let countdownSeconds = 120;
 let autoRefreshEnabled = true;
 let selectedCoin = 'bitcoin';
+let chartInterval = '4h';
 let allCoins = [];
 let currentSignals = [];
 let sortColumn = 'market_cap_rank';
@@ -442,11 +443,39 @@ function renderSignalTable(signals) {
 }
 
 // ─── Chart ───
-async function loadChart(coinId) {
-    const ohlc = await getOHLC(coinId);
+async function loadChart(coinId, interval) {
+    if (interval) chartInterval = interval;
+    const ohlc = await getOHLC(coinId, chartInterval);
     if (ohlc && ohlc.length > 0) {
         updateChartData(ohlc);
     }
+}
+
+function switchChartInterval(interval) {
+    chartInterval = interval;
+    document.querySelectorAll('[data-interval]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.interval === interval);
+    });
+    loadChart(selectedCoin, interval);
+}
+
+function toggleChartFullscreen() {
+    const card = document.getElementById('chart-card');
+    if (!card) return;
+
+    card.classList.toggle('chart-fullscreen');
+    document.body.classList.toggle('chart-fs-open');
+
+    // Resize chart after transition
+    setTimeout(() => {
+        if (mainChart) {
+            const container = document.getElementById('chart-container');
+            if (container) {
+                mainChart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+                mainChart.timeScale().fitContent();
+            }
+        }
+    }, 50);
 }
 
 // ─── Top Movers ───
@@ -663,7 +692,15 @@ function closeModal() {
 
 // Close modal on Escape
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Escape') {
+        // Exit chart fullscreen first if active
+        const card = document.getElementById('chart-card');
+        if (card && card.classList.contains('chart-fullscreen')) {
+            toggleChartFullscreen();
+            return;
+        }
+        closeModal();
+    }
 });
 
 // ─── Export ───

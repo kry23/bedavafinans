@@ -9,13 +9,16 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, Response, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, Response, JSONResponse
 
 from config import HOST, PORT, CACHE_TTL_MARKET_DATA
 from backend.api.routes import router as api_router
 
 # Ensure project root is on path
 sys.path.insert(0, str(Path(__file__).parent))
+
+# Dynamic cache-bust version (changes every deploy/restart)
+ASSET_VERSION = str(int(time.time()))
 
 
 # ─── Rate Limiting ───
@@ -105,8 +108,13 @@ app.include_router(api_router, prefix="/api")
 
 @app.get("/")
 async def serve_dashboard():
-    """Serve the main dashboard page."""
-    return FileResponse(str(frontend_dir / "index.html"))
+    """Serve the main dashboard page with dynamic cache-bust versions."""
+    html = (frontend_dir / "index.html").read_text(encoding="utf-8")
+    html = html.replace("?v=2", f"?v={ASSET_VERSION}")
+    return HTMLResponse(
+        content=html,
+        headers={"Cache-Control": "no-cache"},
+    )
 
 
 @app.get("/manifest.json")

@@ -1,22 +1,9 @@
-/* BedavaFinans Service Worker - Stale-while-revalidate caching */
+/* BedavaFinans Service Worker - Network-first for HTML, stale-while-revalidate for assets */
 
-const CACHE_NAME = 'bedavafinans-v2';
-const STATIC_ASSETS = [
-    '/',
-    '/static/css/custom.css',
-    '/static/js/utils.js',
-    '/static/js/i18n.js',
-    '/static/js/api.js',
-    '/static/js/charts.js',
-    '/static/js/signals.js',
-    '/static/js/widgets.js',
-    '/static/js/app.js',
-];
+const CACHE_NAME = 'bedavafinans-v3';
 
 self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
-    );
+    // Skip pre-caching (versioned URLs change per deploy)
     self.skipWaiting();
 });
 
@@ -31,9 +18,27 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
     const { request } = event;
+    const url = new URL(request.url);
+
+    // Skip non-GET requests
+    if (request.method !== 'GET') return;
 
     // API calls: network-first
-    if (request.url.includes('/api/')) {
+    if (url.pathname.startsWith('/api/')) {
+        event.respondWith(
+            fetch(request)
+                .then((res) => {
+                    const clone = res.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+                    return res;
+                })
+                .catch(() => caches.match(request))
+        );
+        return;
+    }
+
+    // HTML pages: network-first (always get latest)
+    if (request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html')) {
         event.respondWith(
             fetch(request)
                 .then((res) => {
