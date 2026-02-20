@@ -123,6 +123,10 @@ const TRANSLATIONS = {
         'refresh-error': 'Yenileme hatasi',
         'alert-prompt': 'Hedef fiyat girin ($):',
 
+        // Pagination
+        'show-more': 'Daha Fazla Göster',
+        'more-coins': 'coin daha',
+
         // Social Buzz
         'social-buzz': 'Piyasa Buzz',
         'social-buzz-sub': 'Hacim & Momentum',
@@ -346,6 +350,10 @@ const TRANSLATIONS = {
         'refresh-error': 'Refresh error',
         'alert-prompt': 'Enter target price ($):',
 
+        // Pagination
+        'show-more': 'Show More',
+        'more-coins': 'more coins',
+
         // Social Buzz
         'social-buzz': 'Market Buzz',
         'social-buzz-sub': 'Volume & Momentum',
@@ -509,15 +517,58 @@ function applyTooltips() {
     document.querySelectorAll('[data-tip]').forEach(el => {
         const key = el.getAttribute('data-tip');
         const text = t(key);
-        // For .info-tip elements, set the .tip-text child
-        const tipEl = el.querySelector('.tip-text');
-        if (tipEl) {
-            tipEl.textContent = text;
-        } else {
-            // For buttons etc., use title attribute
+        // Store translated text as data attribute for global tooltip JS
+        el.setAttribute('data-tip-text', text);
+        // For non-.info-tip elements (buttons etc.), also set title fallback
+        if (!el.classList.contains('info-tip')) {
             el.title = text;
         }
     });
+    // Initialize global tooltip hover listeners (once)
+    initGlobalTooltip();
+}
+
+let _tooltipInitialized = false;
+function initGlobalTooltip() {
+    if (_tooltipInitialized) return;
+    _tooltipInitialized = true;
+
+    const tip = document.getElementById('global-tooltip');
+    if (!tip) return;
+
+    document.addEventListener('mouseenter', (e) => {
+        const el = e.target.closest('.info-tip[data-tip]');
+        if (!el) return;
+        const text = el.getAttribute('data-tip-text');
+        if (!text) return;
+
+        tip.textContent = text;
+        tip.classList.add('visible');
+        tip.classList.remove('arrow-bottom');
+
+        // Position above the icon
+        const rect = el.getBoundingClientRect();
+        const tipRect = tip.getBoundingClientRect();
+        let left = rect.left + rect.width / 2 - tipRect.width / 2;
+        let top = rect.top - tipRect.height - 10;
+
+        // If goes above viewport, show below
+        if (top < 4) {
+            top = rect.bottom + 10;
+            tip.classList.add('arrow-bottom');
+        }
+        // Clamp to viewport edges
+        left = Math.max(8, Math.min(left, window.innerWidth - tipRect.width - 8));
+
+        tip.style.left = left + 'px';
+        tip.style.top = top + 'px';
+    }, true);
+
+    document.addEventListener('mouseleave', (e) => {
+        const el = e.target.closest('.info-tip[data-tip]');
+        if (!el) return;
+        tip.classList.remove('visible', 'arrow-bottom');
+    }, true);
 }
 
 function updateLangButton() {

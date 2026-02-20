@@ -15,6 +15,7 @@ let searchQuery = '';
 let watchlist = JSON.parse(localStorage.getItem('bedavafinans-watchlist') || '[]');
 let showWatchlistOnly = false;
 let priceAlerts = JSON.parse(localStorage.getItem('bedavafinans-alerts') || '[]');
+let coinTableLimit = 20; // Show 20 coins initially for DOM performance
 
 // ─── Theme ───
 let currentTheme = localStorage.getItem('bedavafinans-theme') || 'dark';
@@ -319,7 +320,12 @@ function renderCoinTable(coins) {
         return sortAsc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
     });
 
-    tbody.innerHTML = filtered.map(coin => {
+    // Limit rows for DOM performance (show coinTableLimit initially)
+    const showAll = searchQuery || showWatchlistOnly;
+    const visible = showAll ? filtered : filtered.slice(0, coinTableLimit);
+    const hasMore = !showAll && filtered.length > coinTableLimit;
+
+    const rows = visible.map(coin => {
         const pct1h = coin.price_change_percentage_1h_in_currency;
         const pct24h = coin.price_change_percentage_24h_in_currency || coin.price_change_percentage_24h;
         const pct7d = coin.price_change_percentage_7d_in_currency;
@@ -340,8 +346,8 @@ function renderCoinTable(coins) {
                         <img src="${coin.image}" width="20" height="20" style="border-radius:50%" alt="" loading="lazy">
                         <span style="font-weight:600">${escapeHtml(coin.name)}</span>
                         <span style="color:var(--text-secondary);font-size:11px">${coin.symbol.toUpperCase()}</span>
-                        <svg onclick="openCoinModal('${coin.id}',event)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" style="cursor:pointer;opacity:0.5;flex-shrink:0" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                        <svg onclick="promptPriceAlert('${coin.id}',event)" width="14" height="14" viewBox="0 0 24 24" fill="${priceAlerts.some(a => a.coinId === coin.id && !a.triggered) ? 'var(--accent-blue)' : 'none'}" stroke="var(--text-secondary)" stroke-width="2" style="cursor:pointer;opacity:0.5;flex-shrink:0" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span onclick="openCoinModal('${coin.id}',event)" class="row-icon-btn" title="Detail">&#9432;</span>
+                        <span onclick="promptPriceAlert('${coin.id}',event)" class="row-icon-btn ${priceAlerts.some(a => a.coinId === coin.id && !a.triggered) ? 'row-icon-active' : ''}" title="Alert">&#128276;</span>
                     </div>
                 </td>
                 <td style="font-weight:500">${formatCurrency(coin.current_price)}</td>
@@ -354,6 +360,24 @@ function renderCoinTable(coins) {
             </tr>
         `;
     }).join('');
+
+    // Add "Show more" row if there are hidden coins
+    const showMoreRow = hasMore ? `
+        <tr id="show-more-row">
+            <td colspan="9" style="text-align:center;padding:12px">
+                <button onclick="showMoreCoins()" class="show-more-btn">
+                    ${t('show-more')} (${filtered.length - coinTableLimit} ${t('more-coins')})
+                </button>
+            </td>
+        </tr>
+    ` : '';
+
+    tbody.innerHTML = rows + showMoreRow;
+}
+
+function showMoreCoins() {
+    coinTableLimit = 200; // Show all
+    renderCoinTable(allCoins);
 }
 
 function sortTable(column) {

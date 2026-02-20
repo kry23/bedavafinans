@@ -74,6 +74,17 @@ body {
     box-shadow: 0 2px 8px var(--shadow);
 }
 
+/* CLS prevention - reserve space for dynamic content */
+.overview-grid .card { min-height: 88px; }
+#whale-ticker { min-height: 36px; contain: layout; }
+#movers-list { min-height: 140px; }
+#anomalies-list { min-height: 100px; }
+#derivatives-list { min-height: 200px; }
+#news-sentiment { min-height: 200px; }
+#social-buzz-list { min-height: 200px; }
+#trending-social-list { min-height: 200px; }
+#chart-container { min-height: 350px; }
+
 /* Signal Badges */
 .signal-badge {
     display: inline-flex;
@@ -328,6 +339,36 @@ body {
 .data-table svg[onclick*="toggleWatchlist"]:hover {
     transform: scale(1.2);
     filter: drop-shadow(0 0 3px rgba(234, 179, 8, 0.4));
+}
+
+/* Row icon buttons (info, alert) - lightweight text-based icons */
+.row-icon-btn {
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+    color: var(--text-secondary);
+    user-select: none;
+}
+.row-icon-btn:hover { opacity: 1; }
+.row-icon-btn.row-icon-active { opacity: 0.9; color: var(--accent-blue); }
+
+/* Show more button */
+.show-more-btn {
+    background: var(--overlay-white);
+    border: 1px solid var(--border);
+    color: var(--accent-blue);
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.show-more-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--accent-blue);
 }
 
 /* Score bar */
@@ -758,7 +799,6 @@ body, .card, header, footer, .data-table th, .data-table td,
     font-weight: 700;
     font-style: normal;
     cursor: help;
-    position: relative;
     vertical-align: middle;
     margin-left: 4px;
     opacity: 0.6;
@@ -770,12 +810,15 @@ body, .card, header, footer, .data-table th, .data-table td,
     border-color: var(--accent-blue);
     color: var(--accent-blue);
 }
+/* Hidden child spans - content read by JS */
 .info-tip .tip-text {
+    display: none !important;
+}
+/* Global tooltip (appended to body, escapes overflow) */
+#global-tooltip {
     display: none;
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
+    position: fixed;
+    z-index: 10000;
     background: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -788,11 +831,13 @@ body, .card, header, footer, .data-table th, .data-table td,
     width: max-content;
     max-width: 260px;
     box-shadow: 0 4px 16px var(--shadow);
-    z-index: 100;
     text-align: left;
     pointer-events: none;
 }
-.info-tip .tip-text::after {
+#global-tooltip.visible {
+    display: block;
+}
+#global-tooltip::after {
     content: '';
     position: absolute;
     top: 100%;
@@ -801,32 +846,15 @@ body, .card, header, footer, .data-table th, .data-table td,
     border: 6px solid transparent;
     border-top-color: var(--border);
 }
-.info-tip:hover .tip-text {
-    display: block;
-}
-/* Right-aligned tooltip for elements near right edge */
-.info-tip.tip-right .tip-text {
-    left: auto;
-    right: 0;
-    transform: none;
-}
-.info-tip.tip-right .tip-text::after {
-    left: auto;
-    right: 12px;
-    transform: none;
-}
-/* Left-aligned tooltip for elements near left edge */
-.info-tip.tip-left .tip-text {
-    left: 0;
-    transform: none;
-}
-.info-tip.tip-left .tip-text::after {
-    left: 12px;
-    transform: none;
+#global-tooltip.arrow-bottom::after {
+    top: auto;
+    bottom: 100%;
+    border-top-color: transparent;
+    border-bottom-color: var(--border);
 }
 
 @media (max-width: 640px) {
-    .info-tip .tip-text {
+    #global-tooltip {
         max-width: 200px;
         font-size: 11px;
         padding: 8px 10px;
