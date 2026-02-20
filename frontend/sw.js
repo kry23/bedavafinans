@@ -1,6 +1,6 @@
-/* BedavaFinans Service Worker - Offline-first caching */
+/* BedavaFinans Service Worker - Stale-while-revalidate caching */
 
-const CACHE_NAME = 'bedavafinans-v1';
+const CACHE_NAME = 'bedavafinans-v2';
 const STATIC_ASSETS = [
     '/',
     '/static/css/custom.css',
@@ -31,6 +31,7 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
     const { request } = event;
+
     // API calls: network-first
     if (request.url.includes('/api/')) {
         event.respondWith(
@@ -44,8 +45,17 @@ self.addEventListener('fetch', (event) => {
         );
         return;
     }
-    // Static assets: cache-first
+
+    // Static assets: stale-while-revalidate (show cache, update in background)
     event.respondWith(
-        caches.match(request).then((cached) => cached || fetch(request))
+        caches.open(CACHE_NAME).then((cache) =>
+            cache.match(request).then((cached) => {
+                const fetched = fetch(request).then((networkRes) => {
+                    cache.put(request, networkRes.clone());
+                    return networkRes;
+                }).catch(() => cached);
+                return cached || fetched;
+            })
+        )
     );
 });

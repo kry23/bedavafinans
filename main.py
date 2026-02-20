@@ -87,7 +87,7 @@ async def add_cache_headers(request: Request, call_next):
     path = request.url.path
     if path.startswith("/static/"):
         if path.endswith((".css", ".js")):
-            response.headers["Cache-Control"] = "public, max-age=3600, stale-while-revalidate=86400"
+            response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=86400"
         elif path.endswith((".png", ".svg", ".jpg", ".jpeg", ".webp", ".ico")):
             response.headers["Cache-Control"] = "public, max-age=86400, immutable"
         elif path.endswith((".woff", ".woff2", ".ttf")):
@@ -118,7 +118,11 @@ async def serve_manifest():
 @app.get("/sw.js")
 async def serve_sw():
     """Serve service worker from root scope."""
-    return FileResponse(str(frontend_dir / "sw.js"), media_type="application/javascript")
+    return FileResponse(
+        str(frontend_dir / "sw.js"),
+        media_type="application/javascript",
+        headers={"Cache-Control": "no-cache"},
+    )
 
 
 @app.get("/sitemap.xml")
