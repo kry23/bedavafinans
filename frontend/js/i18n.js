@@ -109,6 +109,7 @@ const TRANSLATIONS = {
 
         // Whale
         'whale-loading': 'Balina verisi yükleniyor...',
+        'ago': 'önce',
 
         // Theme
         'toggle-theme': 'Tema değiştir',
@@ -269,6 +270,7 @@ const TRANSLATIONS = {
         'very-bearish': 'Very Bearish',
 
         'whale-loading': 'Whale data loading...',
+        'ago': 'ago',
 
         'watchlist': 'Watchlist',
         'watchlist-filter-title': 'Filter watchlist',

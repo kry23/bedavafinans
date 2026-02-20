@@ -86,10 +86,24 @@ function renderWhaleTicker(containerId, whaleData) {
     const items = whaleData.map(tx => {
         const btc = tx.value_btc?.toLocaleString() || '?';
         const usd = tx.value_usd ? formatCurrency(tx.value_usd) : '';
-        return `<span style="margin:0 24px;font-size:12px">
-            <span style="color:#f7931a">&#8383;</span>
-            <strong>${btc} BTC</strong>
-            ${usd ? `<span style="color:var(--text-secondary)">(${usd})</span>` : ''}
+        // Size classification
+        let sizeClass = 'medium';
+        let sizeLabel = '50+ BTC';
+        if (tx.value_btc >= 500) { sizeClass = 'mega'; sizeLabel = '500+ BTC'; }
+        else if (tx.value_btc >= 100) { sizeClass = 'large'; sizeLabel = '100+ BTC'; }
+        // Time ago
+        let timeStr = '';
+        if (tx.time) {
+            const mins = Math.floor((Date.now() / 1000 - tx.time) / 60);
+            timeStr = mins < 60 ? `${mins}m` : `${Math.floor(mins / 60)}h`;
+        }
+        return `<span class="whale-tx">
+            <span class="whale-tx-size ${sizeClass}">${sizeLabel}</span>
+            <span style="font-size:16px">🐋</span>
+            <span class="whale-tx-amount">${btc} BTC</span>
+            ${usd ? `<span class="whale-tx-usd">${usd}</span>` : ''}
+            ${tx.block_id ? `<span class="whale-tx-time">Block #${tx.block_id}</span>` : ''}
+            ${timeStr ? `<span class="whale-tx-time">${timeStr} ${t('ago') || 'önce'}</span>` : ''}
         </span>`;
     }).join('');
 
