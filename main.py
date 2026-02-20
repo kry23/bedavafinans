@@ -7,7 +7,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 
 from config import HOST, PORT, CACHE_TTL_MARKET_DATA
 from backend.api.routes import router as api_router
@@ -90,6 +90,36 @@ async def serve_manifest():
 async def serve_sw():
     """Serve service worker from root scope."""
     return FileResponse(str(frontend_dir / "sw.js"), media_type="application/javascript")
+
+
+@app.get("/sitemap.xml")
+async def serve_sitemap():
+    """Serve XML sitemap for search engines."""
+    xml = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://bedavafinans.info/</loc>
+    <changefreq>hourly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.bedavafinans.info/</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>"""
+    return Response(content=xml, media_type="application/xml")
+
+
+@app.get("/robots.txt")
+async def serve_robots():
+    """Serve robots.txt for search engine crawlers."""
+    txt = """User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://bedavafinans.info/sitemap.xml"""
+    return Response(content=txt, media_type="text/plain")
 
 
 if __name__ == "__main__":

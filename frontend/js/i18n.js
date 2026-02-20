@@ -64,6 +64,7 @@ const TRANSLATIONS = {
         'footer-text': 'BedavaFinans Sinyal Paneli',
         'footer-data': 'Veri:',
         'footer-refresh': 'Otomatik yenileme: 2 dk',
+        'share': 'Paylaş:',
 
         // Signals
         'strong-buy': 'GÜÇLÜ AL',
@@ -227,6 +228,7 @@ const TRANSLATIONS = {
         'footer-text': 'BedavaFinans Signal Dashboard',
         'footer-data': 'Data:',
         'footer-refresh': 'Auto-refresh: 2 min',
+        'share': 'Share:',
 
         'strong-buy': 'STRONG BUY',
         'buy': 'BUY',
