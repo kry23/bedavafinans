@@ -125,6 +125,7 @@ function renderDynamicContent() {
         renderSocialBuzz('social-buzz-list', window._socialData.market_buzz || []);
         if (window._socialData.has_lunarcrush) renderTrendingSocial('trending-social-list', window._socialData.trending || []);
     }
+    if (window._arbitrageData) renderArbitrage(window._arbitrageData);
     populateDreamCoinSelect();
     calculateDream();
 }
@@ -174,6 +175,7 @@ async function loadAll() {
         loadWhales(),
         loadSentiment(),
         loadSocial(),
+        loadArbitrage(),
         loadChart(selectedCoin),
     ]);
 
@@ -197,6 +199,7 @@ function startAutoRefresh() {
             loadWhales(),
             loadSentiment(),
             loadSocial(),
+            loadArbitrage(),
         ]);
         updateTimestamp();
         countdownSeconds = REFRESH_INTERVAL / 1000;
@@ -751,6 +754,96 @@ function promptPriceAlert(coinId, event) {
     if (Notification.permission === 'default') {
         Notification.requestPermission();
     }
+}
+
+// ─── Funding Rate Arbitrage ───
+let arbitrageTab = 'all';
+
+async function loadArbitrage() {
+    const data = await getArbitrage();
+    window._arbitrageData = data || [];
+    renderArbitrage(window._arbitrageData);
+}
+
+function renderArbitrage(data) {
+    const tbody = document.getElementById('arbitrage-tbody');
+    if (!tbody) return;
+
+    if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-secondary)">${t('fr-no-data')}</td></tr>`;
+        return;
+    }
+
+    let filtered = data;
+    if (arbitrageTab === 'positive') {
+        filtered = data.filter(d => d.funding_rate > 0);
+    } else if (arbitrageTab === 'negative') {
+        filtered = data.filter(d => d.funding_rate < 0);
+    }
+
+    tbody.innerHTML = filtered.slice(0, 30).map(d => {
+        const frColor = d.funding_rate > 0 ? '#10b981' : d.funding_rate < 0 ? '#ef4444' : '#6b7280';
+        const aprColor = d.apr > 0 ? '#10b981' : d.apr < 0 ? '#ef4444' : '#6b7280';
+        const spreadColor = Math.abs(d.spread) > 0.1 ? '#f97316' : 'var(--text-secondary)';
+        const strategy = d.funding_rate > 0 ? t('fr-strategy-long') : t('fr-strategy-short');
+        const strategyColor = d.funding_rate > 0 ? '#10b981' : '#ef4444';
+
+        // Time until next funding
+        let nextStr = '—';
+        if (d.next_funding) {
+            const ms = d.next_funding - Date.now();
+            if (ms > 0) {
+                const hrs = Math.floor(ms / 3600000);
+                const mins = Math.floor((ms % 3600000) / 60000);
+                nextStr = `${hrs}h ${mins}m`;
+            } else {
+                nextStr = 'Now';
+            }
+        }
+
+        // APR badge class
+        let aprBadge = '';
+        const absApr = Math.abs(d.apr);
+        if (absApr >= 100) aprBadge = 'fr-apr-hot';
+        else if (absApr >= 30) aprBadge = 'fr-apr-warm';
+
+        return `
+            <tr>
+                <td>
+                    <span style="font-weight:600;font-size:13px">${escapeHtml(d.symbol)}</span>
+                    <span style="color:var(--text-secondary);font-size:10px">/USDT</span>
+                </td>
+                <td style="font-size:12px">
+                    <div>S: ${formatArbitragePrice(d.spot_price)}</div>
+                    <div style="color:var(--text-secondary)">F: ${formatArbitragePrice(d.mark_price)}</div>
+                </td>
+                <td style="font-weight:600;color:${frColor}">${d.funding_rate > 0 ? '+' : ''}${d.funding_rate.toFixed(4)}%</td>
+                <td>
+                    <span class="fr-apr-badge ${aprBadge}" style="color:${aprColor}">${d.apr > 0 ? '+' : ''}${d.apr.toFixed(1)}%</span>
+                </td>
+                <td style="color:${spreadColor};font-size:12px">${d.spread > 0 ? '+' : ''}${d.spread.toFixed(4)}%</td>
+                <td style="color:var(--text-secondary);font-size:12px">${d.open_interest_usd != null ? formatLargeNumber(d.open_interest_usd) : '—'}</td>
+                <td style="font-size:11px;color:var(--text-secondary)">${nextStr}</td>
+                <td style="font-size:10px;color:${strategyColor};white-space:nowrap">${strategy}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function formatArbitragePrice(price) {
+    if (price == null) return '—';
+    if (price >= 1000) return '$' + price.toLocaleString('en-US', { maximumFractionDigits: 2 });
+    if (price >= 1) return '$' + price.toFixed(2);
+    if (price >= 0.01) return '$' + price.toFixed(4);
+    return '$' + price.toFixed(6);
+}
+
+function switchArbitrageTab(tab) {
+    arbitrageTab = tab;
+    document.querySelectorAll('.fr-filter-tab').forEach(el => {
+        el.classList.toggle('active', el.dataset.frTab === tab);
+    });
+    if (window._arbitrageData) renderArbitrage(window._arbitrageData);
 }
 
 // ─── Dream Machine ───

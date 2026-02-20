@@ -64,3 +64,7 @@ async function getSocialOverview() {
 async function getSocialCoin(coinId) {
     return await fetchJSON(`/social/coin/${coinId}`);
 }
+
+async function getArbitrage() {
+    return await fetchJSON('/arbitrage');
+}

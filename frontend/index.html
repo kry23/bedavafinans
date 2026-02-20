@@ -225,7 +225,45 @@
             </div>
         </div>
 
-        <!-- ═══ ROW 6: Dream Machine ═══ -->
+        <!-- ═══ ROW 6: Funding Rate Arbitrage ═══ -->
+        <div class="card" style="padding:0;overflow:hidden">
+            <div class="px-4 py-3 flex items-center justify-between flex-wrap gap-2" style="border-bottom:1px solid var(--border)">
+                <div class="flex items-center gap-2">
+                    <span style="font-size:18px">&#x1F4B0;</span>
+                    <h2 class="font-semibold text-sm" data-i18n="fr-arbitrage">Fonlama Oranı Arbitrajı</h2>
+                    <span class="fr-badge-exchange">Binance</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="flex gap-1">
+                        <button class="tab-btn fr-filter-tab active" data-fr-tab="all" onclick="switchArbitrageTab('all')" data-i18n="fr-tab-all">Tümü</button>
+                        <button class="tab-btn fr-filter-tab" data-fr-tab="positive" onclick="switchArbitrageTab('positive')" data-i18n="fr-tab-positive">Pozitif FR</button>
+                        <button class="tab-btn fr-filter-tab" data-fr-tab="negative" onclick="switchArbitrageTab('negative')" data-i18n="fr-tab-negative">Negatif FR</button>
+                    </div>
+                    <span style="font-size:11px;color:var(--text-secondary)" data-i18n="fr-arbitrage-sub">Spot Al + Vadeli Sat Stratejisi</span>
+                </div>
+            </div>
+            <div style="overflow-x:auto;max-height:520px;overflow-y:auto">
+                <table class="data-table fr-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="fr-th-pair">Çift</th>
+                            <th data-i18n="fr-th-price">Fiyat</th>
+                            <th data-i18n="fr-th-funding">Fonlama</th>
+                            <th data-i18n="fr-th-apr">Yıllık %</th>
+                            <th data-i18n="fr-th-spread">Spread</th>
+                            <th data-i18n="fr-th-oi">Açık Pozisyon</th>
+                            <th data-i18n="fr-th-next">Sonraki</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="arbitrage-tbody">
+                        <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-secondary)" data-i18n="fr-no-data">Arbitraj verisi yükleniyor...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ═══ ROW 7: Dream Machine ═══ -->
         <div class="card dream-machine-card" style="padding:0;overflow:hidden">
             <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
                 <div class="flex items-center gap-2">

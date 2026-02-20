@@ -12,6 +12,7 @@ from backend.services.fear_greed import fetch_fear_greed
 from backend.services.whale_tracker import fetch_whale_transactions, enrich_whale_data
 from backend.services.news_sentiment import fetch_crypto_news, get_overall_sentiment
 from backend.services.social_sentiment import get_social_overview, get_coin_social
+from backend.services.funding_arbitrage import fetch_arbitrage_data
 from backend.analysis.indicators import ohlc_to_dataframe, klines_to_dataframe, compute_all_indicators
 from backend.analysis.signals import generate_composite_signal
 from backend.analysis.volume_anomaly import scan_all_anomalies
@@ -296,6 +297,13 @@ async def social_overview():
 async def social_coin(coin_id: str):
     """Social data for a specific coin."""
     return await get_coin_social(coin_id)
+
+
+@router.get("/arbitrage")
+async def arbitrage():
+    """Funding rate arbitrage opportunities from Binance Futures."""
+    data = await fetch_arbitrage_data()
+    return data or []
 
 
 @router.get("/coin/{coin_id}")

@@ -23,6 +23,7 @@ CACHE_TTL_DERIVATIVES = 300    # 5 min
 CACHE_TTL_WHALES = 300         # 5 min
 CACHE_TTL_NEWS = 900           # 15 min
 CACHE_TTL_SOCIAL = 600         # 10 min (social sentiment)
+CACHE_TTL_ARBITRAGE = 300      # 5 min (funding rate arbitrage)
 
 # === Technical Analysis Parameters ===
 RSI_PERIOD = 14

@@ -744,6 +744,56 @@ body, .card, header, footer, .data-table th, .data-table td,
     .dream-items-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ═══ Funding Rate Arbitrage ═══ */
+.fr-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
+.fr-table td { font-size: 12px; padding: 8px 10px; }
+.fr-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.fr-table tbody tr:hover { background: var(--bg-card-hover); }
+
+.fr-badge-exchange {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    background: rgba(243, 186, 47, 0.12);
+    color: #f3ba2f;
+    letter-spacing: 0.3px;
+}
+
+.fr-apr-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.fr-apr-badge.fr-apr-hot {
+    background: rgba(239, 68, 68, 0.12);
+    animation: fr-pulse 2s infinite;
+}
+
+.fr-apr-badge.fr-apr-warm {
+    background: rgba(249, 115, 22, 0.1);
+}
+
+@keyframes fr-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.fr-filter-tab {
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+}
+
+.fr-filter-tab.active {
+    color: var(--accent-blue) !important;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 6px;
+}
+
 /* Touch-friendly tap targets */
 @media (hover: none) and (pointer: coarse) {
     .data-table tbody tr { min-height: 44px; }
