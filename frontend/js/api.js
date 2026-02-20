@@ -52,3 +52,7 @@ async function getWhales() {
 async function getSentiment() {
     return await fetchJSON('/sentiment');
 }
+
+async function getCoinDetail(coinId) {
+    return await fetchJSON(`/coin/${coinId}`);
+}

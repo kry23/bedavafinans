@@ -61,3 +61,31 @@ function escapeHtml(str) {
     div.textContent = str;
     return div.innerHTML;
 }
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+function renderSparklineSVG(prices, isUp) {
+    if (!prices || prices.length < 2) return '';
+    // Downsample to ~30 points for performance
+    const step = Math.max(1, Math.floor(prices.length / 30));
+    const pts = prices.filter((_, i) => i % step === 0 || i === prices.length - 1);
+    const min = Math.min(...pts);
+    const max = Math.max(...pts);
+    const range = max - min || 1;
+    const w = 70, h = 24;
+    const points = pts.map((v, i) => {
+        const x = (i / (pts.length - 1)) * w;
+        const y = h - ((v - min) / range) * h;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    const color = isUp ? '#10b981' : '#ef4444';
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block"><polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}

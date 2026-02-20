@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter
 
 from config import SIGNAL_COINS_COUNT, TOP_MOVERS_COUNT, BINANCE_SYMBOL_MAP
-from backend.services.coingecko import fetch_top_coins, fetch_global, fetch_ohlc
+from backend.services.coingecko import fetch_top_coins, fetch_global, fetch_ohlc, fetch_coin_detail
 from backend.services.binance import fetch_klines, coingecko_id_to_binance, fetch_top_derivatives
 from backend.services.fear_greed import fetch_fear_greed
 from backend.services.whale_tracker import fetch_whale_transactions, enrich_whale_data
@@ -282,6 +282,38 @@ async def sentiment():
         "overall": overall,
         "fear_greed": fg,
         "recent_news": (news or [])[:10],
+    }
+
+
+@router.get("/coin/{coin_id}")
+async def coin_detail(coin_id: str):
+    """Detailed info for a specific coin."""
+    detail = await fetch_coin_detail(coin_id)
+    if not detail:
+        return {}
+    return {
+        "id": detail.get("id"),
+        "name": detail.get("name"),
+        "symbol": detail.get("symbol", "").upper(),
+        "image": detail.get("image", {}).get("large"),
+        "description": (detail.get("description", {}).get("en") or "")[:500],
+        "market_cap_rank": detail.get("market_cap_rank"),
+        "market_data": {
+            "current_price": detail.get("market_data", {}).get("current_price", {}).get("usd"),
+            "market_cap": detail.get("market_data", {}).get("market_cap", {}).get("usd"),
+            "total_volume": detail.get("market_data", {}).get("total_volume", {}).get("usd"),
+            "high_24h": detail.get("market_data", {}).get("high_24h", {}).get("usd"),
+            "low_24h": detail.get("market_data", {}).get("low_24h", {}).get("usd"),
+            "ath": detail.get("market_data", {}).get("ath", {}).get("usd"),
+            "ath_change_percentage": detail.get("market_data", {}).get("ath_change_percentage", {}).get("usd"),
+            "circulating_supply": detail.get("market_data", {}).get("circulating_supply"),
+            "total_supply": detail.get("market_data", {}).get("total_supply"),
+            "max_supply": detail.get("market_data", {}).get("max_supply"),
+        },
+        "links": {
+            "homepage": (detail.get("links", {}).get("homepage") or [None])[0],
+            "blockchain_site": next((s for s in (detail.get("links", {}).get("blockchain_site") or []) if s), None),
+        },
     }
 
 

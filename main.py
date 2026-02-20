@@ -62,6 +62,18 @@ async def serve_dashboard():
     return FileResponse(str(frontend_dir / "index.html"))
 
 
+@app.get("/manifest.json")
+async def serve_manifest():
+    """Serve PWA manifest."""
+    return FileResponse(str(frontend_dir / "manifest.json"), media_type="application/manifest+json")
+
+
+@app.get("/sw.js")
+async def serve_sw():
+    """Serve service worker from root scope."""
+    return FileResponse(str(frontend_dir / "sw.js"), media_type="application/javascript")
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host=HOST, port=PORT, reload=True)

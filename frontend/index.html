@@ -2,7 +2,23 @@
 <html lang="tr" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="description" content="BedavaFinans - Kripto piyasa sinyal paneli. Top 50 coin, teknik analiz sinyalleri, Fear & Greed, balina takibi ve daha fazlasi.">
+    <meta name="keywords" content="kripto, bitcoin, sinyal, teknik analiz, fear greed, whale tracker, derivatives, BedavaFinans">
+    <meta name="author" content="BedavaFinans">
+    <meta property="og:title" content="BedavaFinans - Kripto Sinyal Paneli">
+    <meta property="og:description" content="Top 50 coin icin 4 katmanli bilesik sinyal sistemi, gercek zamanli piyasa verileri ve teknik analiz.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bedavafinans.info">
+    <meta property="og:locale" content="tr_TR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BedavaFinans - Kripto Sinyal Paneli">
+    <meta name="twitter:description" content="Top 50 coin icin 4 katmanli bilesik sinyal sistemi, gercek zamanli piyasa verileri.">
+    <link rel="canonical" href="https://bedavafinans.info">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>BedavaFinans - Kripto Sinyal Paneli</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,19 +40,23 @@
 
     <!-- ═══ HEADER ═══ -->
     <header style="background:var(--bg-secondary);border-bottom:1px solid var(--border)" class="px-4 py-3">
-        <div class="max-w-[1440px] mx-auto flex items-center justify-between">
+        <div class="max-w-[1440px] mx-auto flex items-center justify-between" style="position:relative">
             <div class="flex items-center gap-3">
                 <h1 class="text-lg font-bold" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">
                     BedavaFinans
                 </h1>
                 <div id="market-score-ring" class="ml-2"></div>
             </div>
-            <div class="flex items-center gap-4 text-sm">
+            <div class="header-controls" id="header-controls">
                 <span id="loading-indicator" style="display:none;color:var(--accent-blue)">
                     <svg class="animate-spin inline w-4 h-4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="32" stroke-dashoffset="8"/></svg>
                 </span>
-                <span style="color:var(--text-secondary)" data-i18n="last-update">Son:</span>
-                <span id="last-updated" class="font-medium">--:--</span>
+                <span style="color:var(--text-secondary);font-size:14px" data-i18n="last-update">Son:</span>
+                <span id="last-updated" class="font-medium" style="font-size:14px">--:--</span>
+                <div id="countdown-bar" style="width:60px;height:4px;border-radius:2px;background:var(--border);overflow:hidden;display:inline-block;vertical-align:middle">
+                    <div id="countdown-fill" style="width:100%;height:100%;background:var(--accent-blue);border-radius:2px;transition:width 1s linear"></div>
+                </div>
+                <span id="countdown-text" style="font-size:11px;color:var(--text-secondary);min-width:28px">2:00</span>
                 <button id="refresh-toggle" class="tab-btn active" style="color:#10b981" data-i18n="auto">Oto</button>
                 <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle" data-i18n-title="toggle-theme" title="Tema değiştir">
                     <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -44,13 +64,16 @@
                 </button>
                 <button id="lang-toggle" onclick="toggleLang()" class="tab-btn" style="color:var(--accent-purple);font-weight:700;min-width:32px" title="Switch to English">EN</button>
             </div>
+            <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
         </div>
     </header>
 
     <main class="max-w-[1440px] mx-auto px-4 py-4 flex flex-col gap-4">
 
         <!-- ═══ ROW 1: Market Overview Cards ═══ -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 overview-grid">
             <div class="card">
                 <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="total-market-cap">Toplam Piyasa Değeri</div>
                 <div id="total-mcap" class="text-xl font-bold">—</div>
@@ -128,7 +151,7 @@
                 <div id="chart-container" style="height:400px"></div>
             </div>
 
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 side-panels">
                 <div class="card" style="padding:0;overflow:hidden">
                     <div class="px-4 py-3 flex items-center gap-2" style="border-bottom:1px solid var(--border)">
                         <h2 class="font-semibold text-sm" data-i18n="top-movers">En Çok Değişenler</h2>
@@ -164,9 +187,17 @@
 
         <!-- ═══ ROW 5: Full Coin Table ═══ -->
         <div class="card" style="padding:0;overflow:hidden">
-            <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
-                <h2 class="font-semibold text-sm" data-i18n="all-coins">Tüm Coinler (Top 50)</h2>
-                <div style="position:relative;width:220px">
+            <div class="px-4 py-3 flex items-center justify-between flex-wrap gap-2" style="border-bottom:1px solid var(--border)">
+                <div class="flex items-center gap-2">
+                    <h2 class="font-semibold text-sm" data-i18n="all-coins">Tüm Coinler (Top 50)</h2>
+                    <button id="watchlist-filter" onclick="toggleWatchlistFilter()" class="tab-btn" style="color:var(--text-secondary);font-size:11px;padding:4px 8px" data-i18n-title="watchlist-filter-title" title="Favorileri filtrele">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <span data-i18n="watchlist">Favoriler</span>
+                    </button>
+                    <button onclick="exportCoins('csv')" class="tab-btn" style="color:var(--text-secondary);font-size:11px;padding:4px 8px" title="Export CSV">CSV</button>
+                    <button onclick="exportCoins('json')" class="tab-btn" style="color:var(--text-secondary);font-size:11px;padding:4px 8px" title="Export JSON">JSON</button>
+                </div>
+                <div class="search-wrapper" style="position:relative;width:220px">
                     <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-secondary)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
                     <input type="text" id="coin-search" class="search-input" data-i18n="search-placeholder" placeholder="Coin ara...">
                 </div>
@@ -181,12 +212,13 @@
                             <th onclick="sortTable('price_change_percentage_1h_in_currency')" data-i18n="th-1h">1s</th>
                             <th onclick="sortTable('price_change_percentage_24h_in_currency')" data-i18n="th-24h">24s</th>
                             <th onclick="sortTable('price_change_percentage_7d_in_currency')" data-i18n="th-7d">7g</th>
+                            <th style="width:80px" data-i18n="th-7d-chart">7g Grafik</th>
                             <th onclick="sortTable('total_volume')" data-i18n="th-volume">Hacim</th>
                             <th onclick="sortTable('market_cap')" data-i18n="th-market-cap">Piyasa Değeri</th>
                         </tr>
                     </thead>
                     <tbody id="coins-tbody">
-                        <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-secondary)" data-i18n="loading-coins">Coinler yükleniyor...</td></tr>
+                        <tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-secondary)" data-i18n="loading-coins">Coinler yükleniyor...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -198,6 +230,19 @@
         <span data-i18n="footer-text">BedavaFinans Sinyal Paneli</span> &middot; <span data-i18n="footer-data">Veri:</span> CoinGecko, Binance, Alternative.me, CryptoCompare &middot; <span data-i18n="footer-refresh">Otomatik yenileme: 2 dk</span>
     </footer>
 
+    <!-- Coin Detail Modal -->
+    <div id="coin-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()">
+        <div class="modal-content card">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div id="modal-body">
+                <div style="text-align:center;padding:24px;color:var(--text-secondary)" data-i18n="loading">Yükleniyor...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div class="toast-container" id="toast-container"></div>
+
     <!-- Scripts (order matters: i18n before app) -->
     <script src="/static/js/utils.js"></script>
     <script src="/static/js/i18n.js"></script>
@@ -206,6 +251,11 @@
     <script src="/static/js/signals.js"></script>
     <script src="/static/js/widgets.js"></script>
     <script src="/static/js/app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        }
+    </script>
 
 </body>
 </html>

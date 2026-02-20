@@ -55,6 +55,7 @@ const TRANSLATIONS = {
         'th-rank': '#',
         'th-1h': '1s',
         'th-7d': '7g',
+        'th-7d-chart': '7g Grafik',
         'th-volume': 'Hacim',
         'th-market-cap': 'Piyasa Değeri',
         'loading-coins': 'Coinler yükleniyor...',
@@ -95,11 +96,20 @@ const TRANSLATIONS = {
         'very-bullish': 'Çok Yükseliş',
         'very-bearish': 'Çok Düşüş',
 
+        // Watchlist
+        'watchlist': 'Favoriler',
+        'watchlist-filter-title': 'Favorileri filtrele',
+
         // Whale
         'whale-loading': 'Balina verisi yükleniyor...',
 
         // Theme
         'toggle-theme': 'Tema değiştir',
+
+        // Toast / Alerts
+        'data-refreshed': 'Veriler guncellendi',
+        'refresh-error': 'Yenileme hatasi',
+        'alert-prompt': 'Hedef fiyat girin ($):',
 
         // General
         'loading': 'Yükleniyor...',
@@ -152,6 +162,7 @@ const TRANSLATIONS = {
         'th-rank': '#',
         'th-1h': '1h',
         'th-7d': '7d',
+        'th-7d-chart': '7d Chart',
         'th-volume': 'Volume',
         'th-market-cap': 'Market Cap',
         'loading-coins': 'Loading coins...',
@@ -188,7 +199,14 @@ const TRANSLATIONS = {
 
         'whale-loading': 'Whale data loading...',
 
+        'watchlist': 'Watchlist',
+        'watchlist-filter-title': 'Filter watchlist',
+
         'toggle-theme': 'Toggle theme',
+
+        'data-refreshed': 'Data refreshed',
+        'refresh-error': 'Refresh error',
+        'alert-prompt': 'Enter target price ($):',
 
         'loading': 'Loading...',
         'pos': 'pos',

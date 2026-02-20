@@ -32,9 +32,11 @@ function initChart(containerId) {
     const isDark = document.documentElement.classList.contains('dark');
     const theme = isDark ? CHART_THEMES.dark : CHART_THEMES.light;
 
+    const chartHeight = container.clientHeight || (window.innerWidth <= 640 ? 280 : 400);
+
     mainChart = LightweightCharts.createChart(container, {
         width: container.clientWidth,
-        height: 400,
+        height: chartHeight,
         layout: {
             ...theme.layout,
             fontFamily: 'Inter, system-ui, sans-serif',
@@ -151,7 +153,10 @@ function initChart(containerId) {
     // Responsive
     const resizeObserver = new ResizeObserver(entries => {
         for (const entry of entries) {
-            if (mainChart) mainChart.applyOptions({ width: entry.contentRect.width });
+            if (mainChart) {
+                const h = entry.contentRect.height || (window.innerWidth <= 640 ? 280 : 400);
+                mainChart.applyOptions({ width: entry.contentRect.width, height: h });
+            }
         }
     });
     resizeObserver.observe(container);

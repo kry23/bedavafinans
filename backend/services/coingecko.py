@@ -27,7 +27,7 @@ async def fetch_top_coins(n: int = TOP_N_COINS) -> list[dict] | None:
                 "order": "market_cap_desc",
                 "per_page": n,
                 "page": 1,
-                "sparkline": "false",
+                "sparkline": "true",
                 "price_change_percentage": "1h,24h,7d",
             },
         )
