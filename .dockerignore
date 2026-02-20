@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.git/
+.gitignore
+.claude/
+.venv/
+venv/
+env/
+.env
+*.log
+dashboard_test.png
+dashboard_light.png
+test_dashboard.py
+crypto-mcp-tools.txt
+.pytest_cache/
+node_modules/
+*.egg-info/
