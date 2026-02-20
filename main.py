@@ -111,7 +111,8 @@ app.include_router(api_router, prefix="/api")
 async def serve_dashboard():
     """Serve the main dashboard page with dynamic cache-bust versions."""
     html = (frontend_dir / "index.html").read_text(encoding="utf-8")
-    html = html.replace("?v=2", f"?v={ASSET_VERSION}")
+    import re
+    html = re.sub(r'\?v=\d+', f'?v={ASSET_VERSION}', html)
     return HTMLResponse(
         content=html,
         headers={"Cache-Control": "no-cache"},
