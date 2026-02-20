@@ -200,6 +200,31 @@ const TRANSLATIONS = {
         'fr-tab-negative': 'Negatif FR',
         'fr-binance-only': 'Sadece Binance',
 
+        // Tooltips
+        'tip-market-cap': 'Tüm kripto paraların toplam piyasa değeri. Fiyat × Dolaşımdaki arz ile hesaplanır.',
+        'tip-volume': 'Son 24 saatte tüm borsalarda gerçekleşen toplam işlem hacmi.',
+        'tip-btc-dom': 'Bitcoin\'in toplam kripto piyasa değeri içindeki yüzdesel payı.',
+        'tip-fear-greed': 'Piyasa duyarlılığını 0-100 arası ölçer. 0 = Aşırı Korku (alım fırsatı), 100 = Aşırı Açgözlülük (düzeltme riski).',
+        'tip-signals': 'RSI, MACD, Bollinger Bands ve hacim analizi katmanlarının birleşik sonucu.',
+        'tip-4layer': '4 farklı teknik analiz katmanının (trend, momentum, volatilite, hacim) ağırlıklı ortalaması.',
+        'tip-rsi': 'Göreceli Güç Endeksi. 30 altı = aşırı satım (alım fırsatı), 70 üstü = aşırı alım (satış sinyali).',
+        'tip-derivatives': 'Vadeli işlem (futures) piyasa verileri. Fonlama, uzun/kısa oranı ve açık pozisyon bilgisi.',
+        'tip-funding': 'Uzun ve kısa pozisyon sahipleri arasında periyodik ödenen ücret. Pozitif = longlar öder, negatif = shortlar öder.',
+        'tip-ls': 'Uzun/Kısa oranı. >1 = daha çok long pozisyon, <1 = daha çok short pozisyon.',
+        'tip-oi': 'Kapatılmamış toplam vadeli işlem sözleşme sayısı. Yüksek OI = güçlü piyasa ilgisi.',
+        'tip-ema': 'Üstel Hareketli Ortalama. Son fiyatlara daha çok ağırlık verir. EMA9 kısa vadeli, EMA21 orta vadeli trend.',
+        'tip-bb': 'Bollinger Bantları. Fiyat volatilitesini ölçer. Üst bant = aşırı alım, alt bant = aşırı satım sinyali.',
+        'tip-vol': 'İşlem hacmi çubukları. Fiyat hareketlerinin arkasındaki alım-satım gücünü gösterir.',
+        'tip-anomaly': 'Hacmi normalin çok üstüne çıkan coinler. Büyük fiyat hareketinin habercisi olabilir.',
+        'tip-sentiment': 'Kripto haberlerinin duygu analizi. Olumlu/olumsuz haberlerin oranı.',
+        'tip-buzz': 'Sosyal medyada kripto hakkındaki etkileşim ve konuşma yoğunluğu.',
+        'tip-arbitrage': 'Spot\'ta alıp vadeli\'de satarak fonlama oranı farkından kazanç elde etme stratejisi.',
+        'tip-apr': 'Yıllık Yüzde Getiri. Fonlama oranının yıllık tahmini kazancı (Fonlama × 3 × 365).',
+        'tip-spread': 'Vadeli işlem fiyatı ile spot fiyat arasındaki yüzdesel fark.',
+        'tip-movers': 'Son 24 saatte en çok fiyat değişimi yaşayan coinler.',
+        'tip-coin-mcap': 'Fiyat × Dolaşımdaki arz ile hesaplanan toplam piyasa değeri.',
+        'tip-coin-vol': 'Son 24 saatte bu coin için gerçekleşen toplam işlem hacmi.',
+
         // General
         'loading': 'Yükleniyor...',
         'pos': 'poz',
@@ -387,6 +412,31 @@ const TRANSLATIONS = {
         'fr-tab-negative': 'Negative FR',
         'fr-binance-only': 'Binance Only',
 
+        // Tooltips
+        'tip-market-cap': 'Total value of all cryptocurrencies. Calculated by price × circulating supply.',
+        'tip-volume': 'Total trading volume across all exchanges in the last 24 hours.',
+        'tip-btc-dom': 'Bitcoin\'s percentage share of the total crypto market cap.',
+        'tip-fear-greed': 'Measures market sentiment from 0-100. 0 = Extreme Fear (buying opportunity), 100 = Extreme Greed (correction risk).',
+        'tip-signals': 'Combined result of RSI, MACD, Bollinger Bands and volume analysis layers.',
+        'tip-4layer': 'Weighted average of 4 technical analysis layers (trend, momentum, volatility, volume).',
+        'tip-rsi': 'Relative Strength Index. Below 30 = oversold (buy signal), above 70 = overbought (sell signal).',
+        'tip-derivatives': 'Futures market data. Funding rate, long/short ratio and open interest information.',
+        'tip-funding': 'Periodic fee paid between long and short position holders. Positive = longs pay, negative = shorts pay.',
+        'tip-ls': 'Long/Short ratio. >1 = more long positions, <1 = more short positions.',
+        'tip-oi': 'Total number of outstanding futures contracts. High OI = strong market interest.',
+        'tip-ema': 'Exponential Moving Average. Gives more weight to recent prices. EMA9 = short-term, EMA21 = mid-term trend.',
+        'tip-bb': 'Bollinger Bands. Measures price volatility. Upper band = overbought, lower band = oversold signal.',
+        'tip-vol': 'Volume bars. Shows the buying and selling activity behind price movements.',
+        'tip-anomaly': 'Coins with volume far above normal. Can signal upcoming large price movements.',
+        'tip-sentiment': 'Sentiment analysis of crypto news. Shows the ratio of positive/negative news.',
+        'tip-buzz': 'Social media engagement and conversation intensity about crypto.',
+        'tip-arbitrage': 'Strategy to profit from funding rate differences by buying spot and selling futures.',
+        'tip-apr': 'Annual Percentage Rate. Estimated yearly return from funding rate (Funding × 3 × 365).',
+        'tip-spread': 'Percentage difference between futures price and spot price.',
+        'tip-movers': 'Coins with the largest price changes in the last 24 hours.',
+        'tip-coin-mcap': 'Total market value calculated by price × circulating supply.',
+        'tip-coin-vol': 'Total trading volume for this coin in the last 24 hours.',
+
         'loading': 'Loading...',
         'pos': 'pos',
         'neg': 'neg',
@@ -426,6 +476,23 @@ function applyTranslations() {
     });
     document.querySelectorAll('[data-i18n-title]').forEach(el => {
         el.title = t(el.getAttribute('data-i18n-title'));
+    });
+    // Apply tooltip texts
+    applyTooltips();
+}
+
+function applyTooltips() {
+    document.querySelectorAll('[data-tip]').forEach(el => {
+        const key = el.getAttribute('data-tip');
+        const text = t(key);
+        // For .info-tip elements, set the .tip-text child
+        const tipEl = el.querySelector('.tip-text');
+        if (tipEl) {
+            tipEl.textContent = text;
+        } else {
+            // For buttons etc., use title attribute
+            el.title = text;
+        }
     });
 }
 

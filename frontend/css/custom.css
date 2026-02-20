@@ -744,6 +744,95 @@ body, .card, header, footer, .data-table th, .data-table td,
     .dream-items-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ═══ Info Tooltips ═══ */
+.info-tip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid var(--text-secondary);
+    color: var(--text-secondary);
+    font-size: 9px;
+    font-weight: 700;
+    font-style: normal;
+    cursor: help;
+    position: relative;
+    vertical-align: middle;
+    margin-left: 4px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+}
+.info-tip:hover {
+    opacity: 1;
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+.info-tip .tip-text {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-primary);
+    white-space: normal;
+    width: max-content;
+    max-width: 260px;
+    box-shadow: 0 4px 16px var(--shadow);
+    z-index: 100;
+    text-align: left;
+    pointer-events: none;
+}
+.info-tip .tip-text::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--border);
+}
+.info-tip:hover .tip-text {
+    display: block;
+}
+/* Right-aligned tooltip for elements near right edge */
+.info-tip.tip-right .tip-text {
+    left: auto;
+    right: 0;
+    transform: none;
+}
+.info-tip.tip-right .tip-text::after {
+    left: auto;
+    right: 12px;
+    transform: none;
+}
+/* Left-aligned tooltip for elements near left edge */
+.info-tip.tip-left .tip-text {
+    left: 0;
+    transform: none;
+}
+.info-tip.tip-left .tip-text::after {
+    left: 12px;
+    transform: none;
+}
+
+@media (max-width: 640px) {
+    .info-tip .tip-text {
+        max-width: 200px;
+        font-size: 11px;
+        padding: 8px 10px;
+    }
+}
+
 /* ═══ Chart Toolbar ═══ */
 .chart-toolbar {
     display: flex;

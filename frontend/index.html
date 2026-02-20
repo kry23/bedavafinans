@@ -92,20 +92,20 @@
         <!-- ═══ ROW 1: Market Overview Cards ═══ -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 overview-grid" style="min-height:120px">
             <div class="card">
-                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="total-market-cap">Toplam Piyasa Değeri</div>
+                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px"><span data-i18n="total-market-cap">Toplam Piyasa Değeri</span> <i class="info-tip tip-left" data-tip="tip-market-cap">i<span class="tip-text"></span></i></div>
                 <div id="total-mcap" class="text-xl font-bold">—</div>
                 <div id="mcap-change" class="text-sm mt-1">—</div>
             </div>
             <div class="card">
-                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="24h-volume">24s Hacim</div>
+                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px"><span data-i18n="24h-volume">24s Hacim</span> <i class="info-tip" data-tip="tip-volume">i<span class="tip-text"></span></i></div>
                 <div id="total-volume" class="text-xl font-bold">—</div>
             </div>
             <div class="card">
-                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="btc-dominance-label">BTC Hakimiyeti</div>
+                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px"><span data-i18n="btc-dominance-label">BTC Hakimiyeti</span> <i class="info-tip" data-tip="tip-btc-dom">i<span class="tip-text"></span></i></div>
                 <div id="btc-dominance" class="text-xl font-bold">—</div>
             </div>
             <div class="card" style="min-height:110px">
-                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px" data-i18n="fear-greed-label">Korku & Açgözlülük</div>
+                <div style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px"><span data-i18n="fear-greed-label">Korku & Açgözlülük</span> <i class="info-tip tip-right" data-tip="tip-fear-greed">i<span class="tip-text"></span></i></div>
                 <div id="fear-greed-gauge"></div>
                 <div id="fear-greed-history" class="mt-2"></div>
             </div>
@@ -118,8 +118,8 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" style="min-height:420px">
             <div class="lg:col-span-2 card" style="padding:0;overflow:hidden">
                 <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
-                    <h2 class="font-semibold text-sm" data-i18n="trading-signals">İşlem Sinyalleri (Top 15)</h2>
-                    <span style="font-size:11px;color:var(--text-secondary)" data-i18n="4-layer">4 Katmanlı Bileşik</span>
+                    <h2 class="font-semibold text-sm"><span data-i18n="trading-signals">İşlem Sinyalleri (Top 15)</span> <i class="info-tip" data-tip="tip-signals">i<span class="tip-text"></span></i></h2>
+                    <span style="font-size:11px;color:var(--text-secondary)"><span data-i18n="4-layer">4 Katmanlı Bileşik</span> <i class="info-tip tip-right" data-tip="tip-4layer">i<span class="tip-text"></span></i></span>
                 </div>
                 <div style="overflow-x:auto;max-height:420px;overflow-y:auto">
                     <table class="data-table">
@@ -130,7 +130,7 @@
                                 <th data-i18n="th-24h">24s</th>
                                 <th data-i18n="th-signal">Sinyal</th>
                                 <th data-i18n="th-score">Skor</th>
-                                <th data-i18n="th-rsi">RSI</th>
+                                <th><span data-i18n="th-rsi">RSI</span> <i class="info-tip" data-tip="tip-rsi">i<span class="tip-text"></span></i></th>
                                 <th data-i18n="th-layers">Katmanlar</th>
                             </tr>
                         </thead>
@@ -143,9 +143,9 @@
 
             <div class="card" style="padding:0;overflow:hidden">
                 <div class="px-4 py-3" style="border-bottom:1px solid var(--border)">
-                    <h2 class="font-semibold text-sm" data-i18n="derivatives">Türev Piyasalar</h2>
+                    <h2 class="font-semibold text-sm"><span data-i18n="derivatives">Türev Piyasalar</span> <i class="info-tip tip-right" data-tip="tip-derivatives">i<span class="tip-text"></span></i></h2>
                     <div class="flex gap-4 mt-1" style="font-size:10px;color:var(--text-secondary)">
-                        <span data-i18n="th-symbol">Sembol</span><span data-i18n="th-funding">Fonlama</span><span data-i18n="th-ls">U/K</span><span data-i18n="th-oi">AK</span>
+                        <span data-i18n="th-symbol">Sembol</span><span><span data-i18n="th-funding">Fonlama</span> <i class="info-tip" data-tip="tip-funding">i<span class="tip-text"></span></i></span><span><span data-i18n="th-ls">U/K</span> <i class="info-tip" data-tip="tip-ls">i<span class="tip-text"></span></i></span><span><span data-i18n="th-oi">AK</span> <i class="info-tip tip-right" data-tip="tip-oi">i<span class="tip-text"></span></i></span>
                     </div>
                 </div>
                 <div id="derivatives-list" class="px-4 py-2" style="max-height:380px;overflow-y:auto">
@@ -182,9 +182,9 @@
                     </div>
                     <div class="chart-toolbar-right">
                         <div class="chart-indicator-group">
-                            <button class="chart-indicator-btn active" data-indicator="ema" onclick="toggleChartIndicator('ema')" data-i18n="chart-ind-ema">EMA</button>
-                            <button class="chart-indicator-btn active" data-indicator="bb" onclick="toggleChartIndicator('bb')" data-i18n="chart-ind-bb">BB</button>
-                            <button class="chart-indicator-btn active" data-indicator="vol" onclick="toggleChartIndicator('vol')" data-i18n="chart-ind-vol">VOL</button>
+                            <button class="chart-indicator-btn active" data-indicator="ema" onclick="toggleChartIndicator('ema')" data-tip="tip-ema" data-i18n="chart-ind-ema">EMA</button>
+                            <button class="chart-indicator-btn active" data-indicator="bb" onclick="toggleChartIndicator('bb')" data-tip="tip-bb" data-i18n="chart-ind-bb">BB</button>
+                            <button class="chart-indicator-btn active" data-indicator="vol" onclick="toggleChartIndicator('vol')" data-tip="tip-vol" data-i18n="chart-ind-vol">VOL</button>
                         </div>
                         <div class="chart-divider"></div>
                         <button class="chart-ctrl-btn" onclick="toggleChartFullscreen()" id="chart-fullscreen-btn" data-i18n-title="chart-fullscreen" title="Tam Ekran">
@@ -199,7 +199,7 @@
             <div class="flex flex-col gap-4 side-panels">
                 <div class="card" style="padding:0;overflow:hidden">
                     <div class="px-4 py-3 flex items-center gap-2" style="border-bottom:1px solid var(--border)">
-                        <h2 class="font-semibold text-sm" data-i18n="top-movers">En Çok Değişenler</h2>
+                        <h2 class="font-semibold text-sm"><span data-i18n="top-movers">En Çok Değişenler</span> <i class="info-tip" data-tip="tip-movers">i<span class="tip-text"></span></i></h2>
                         <div class="flex gap-1 ml-auto">
                             <button class="tab-btn movers-tab active" data-tab="gainers" onclick="switchMoversTab('gainers')" data-i18n="gainers">Yükselenler</button>
                             <button class="tab-btn movers-tab" data-tab="losers" onclick="switchMoversTab('losers')" data-i18n="losers">Düşenler</button>
@@ -212,7 +212,7 @@
 
                 <div class="card" style="padding:0;overflow:hidden">
                     <div class="px-4 py-3" style="border-bottom:1px solid var(--border)">
-                        <h2 class="font-semibold text-sm" data-i18n="volume-anomalies">Hacim Anomalileri</h2>
+                        <h2 class="font-semibold text-sm"><span data-i18n="volume-anomalies">Hacim Anomalileri</span> <i class="info-tip tip-right" data-tip="tip-anomaly">i<span class="tip-text"></span></i></h2>
                     </div>
                     <div id="anomalies-list" class="px-4 py-2" style="max-height:140px;overflow-y:auto">
                         <div style="color:var(--text-secondary);font-size:12px" data-i18n="loading">Yükleniyor...</div>
@@ -221,7 +221,7 @@
 
                 <div class="card" style="padding:0;overflow:hidden">
                     <div class="px-4 py-3" style="border-bottom:1px solid var(--border)">
-                        <h2 class="font-semibold text-sm" data-i18n="news-sentiment">Haber Duygusu</h2>
+                        <h2 class="font-semibold text-sm"><span data-i18n="news-sentiment">Haber Duygusu</span> <i class="info-tip tip-right" data-tip="tip-sentiment">i<span class="tip-text"></span></i></h2>
                     </div>
                     <div id="news-sentiment" class="px-4 py-2" style="max-height:240px;overflow-y:auto">
                         <div style="color:var(--text-secondary);font-size:12px" data-i18n="loading">Yükleniyor...</div>
@@ -234,7 +234,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div class="card" style="padding:0;overflow:hidden">
                 <div class="px-4 py-3 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
-                    <h2 class="font-semibold text-sm" data-i18n="social-buzz">Piyasa Buzz</h2>
+                    <h2 class="font-semibold text-sm"><span data-i18n="social-buzz">Piyasa Buzz</span> <i class="info-tip" data-tip="tip-buzz">i<span class="tip-text"></span></i></h2>
                     <span style="font-size:11px;color:var(--text-secondary)" data-i18n="social-buzz-sub">Hacim & Momentum</span>
                 </div>
                 <div id="social-buzz-list" class="px-4 py-2" style="max-height:320px;overflow-y:auto">
@@ -258,7 +258,7 @@
             <div class="px-4 py-3 flex items-center justify-between flex-wrap gap-2" style="border-bottom:1px solid var(--border)">
                 <div class="flex items-center gap-2">
                     <span style="font-size:18px">&#x1F4B0;</span>
-                    <h2 class="font-semibold text-sm" data-i18n="fr-arbitrage">Fonlama Oranı Arbitrajı</h2>
+                    <h2 class="font-semibold text-sm"><span data-i18n="fr-arbitrage">Fonlama Oranı Arbitrajı</span> <i class="info-tip" data-tip="tip-arbitrage">i<span class="tip-text"></span></i></h2>
                     <span class="fr-badge-exchange">Binance</span>
                 </div>
                 <div class="flex items-center gap-2">
@@ -276,10 +276,10 @@
                         <tr>
                             <th data-i18n="fr-th-pair">Çift</th>
                             <th data-i18n="fr-th-price">Fiyat</th>
-                            <th data-i18n="fr-th-funding">Fonlama</th>
-                            <th data-i18n="fr-th-apr">Yıllık %</th>
-                            <th data-i18n="fr-th-spread">Spread</th>
-                            <th data-i18n="fr-th-oi">Açık Pozisyon</th>
+                            <th><span data-i18n="fr-th-funding">Fonlama</span> <i class="info-tip" data-tip="tip-funding">i<span class="tip-text"></span></i></th>
+                            <th><span data-i18n="fr-th-apr">Yıllık %</span> <i class="info-tip" data-tip="tip-apr">i<span class="tip-text"></span></i></th>
+                            <th><span data-i18n="fr-th-spread">Spread</span> <i class="info-tip" data-tip="tip-spread">i<span class="tip-text"></span></i></th>
+                            <th><span data-i18n="fr-th-oi">Açık Pozisyon</span> <i class="info-tip tip-right" data-tip="tip-oi">i<span class="tip-text"></span></i></th>
                             <th data-i18n="fr-th-next">Sonraki</th>
                             <th></th>
                         </tr>
@@ -373,8 +373,8 @@
                             <th onclick="sortTable('price_change_percentage_24h_in_currency')" data-i18n="th-24h">24s</th>
                             <th onclick="sortTable('price_change_percentage_7d_in_currency')" data-i18n="th-7d">7g</th>
                             <th style="width:80px" data-i18n="th-7d-chart">7g Grafik</th>
-                            <th onclick="sortTable('total_volume')" data-i18n="th-volume">Hacim</th>
-                            <th onclick="sortTable('market_cap')" data-i18n="th-market-cap">Piyasa Değeri</th>
+                            <th onclick="sortTable('total_volume')"><span data-i18n="th-volume">Hacim</span> <i class="info-tip" data-tip="tip-coin-vol">i<span class="tip-text"></span></i></th>
+                            <th onclick="sortTable('market_cap')"><span data-i18n="th-market-cap">Piyasa Değeri</span> <i class="info-tip tip-right" data-tip="tip-coin-mcap">i<span class="tip-text"></span></i></th>
                         </tr>
                     </thead>
                     <tbody id="coins-tbody">
