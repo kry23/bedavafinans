@@ -2,7 +2,7 @@
 
 import httpx
 
-from config import COINGECKO_BASE_URL, TOP_N_COINS, CACHE_TTL_MARKET_DATA, CACHE_TTL_OHLC, CACHE_TTL_GLOBAL
+from config import COINGECKO_BASE_URL, TOP_N_COINS, CACHE_TTL_MARKET_DATA, CACHE_TTL_OHLC, CACHE_TTL_GLOBAL, SOLANA_ECOSYSTEM_COUNT, CACHE_TTL_SOLANA
 from backend.cache.memory_cache import cache
 
 _client: httpx.AsyncClient | None = None
@@ -63,6 +63,29 @@ async def fetch_ohlc(coin_id: str, days: int = 14) -> list[list] | None:
         return resp.json()
 
     return await cache.get_or_fetch(f"ohlc_{coin_id}_{days}", CACHE_TTL_OHLC, _fetch)
+
+
+async def fetch_solana_coins(n: int = SOLANA_ECOSYSTEM_COUNT) -> list[dict] | None:
+    """Fetch top N Solana ecosystem coins by market cap."""
+
+    async def _fetch():
+        client = _get_client()
+        resp = await client.get(
+            f"{COINGECKO_BASE_URL}/coins/markets",
+            params={
+                "vs_currency": "usd",
+                "category": "solana-ecosystem",
+                "order": "market_cap_desc",
+                "per_page": n,
+                "page": 1,
+                "sparkline": "true",
+                "price_change_percentage": "1h,24h,7d",
+            },
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    return await cache.get_or_fetch(f"solana_ecosystem_{n}", CACHE_TTL_SOLANA, _fetch)
 
 
 async def fetch_coin_detail(coin_id: str) -> dict | None:

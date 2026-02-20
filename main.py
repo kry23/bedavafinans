@@ -29,7 +29,7 @@ RATE_LIMIT_WINDOW = 60  # seconds
 
 async def periodic_refresh():
     """Background task to pre-warm cache periodically."""
-    from backend.services.coingecko import fetch_top_coins, fetch_global
+    from backend.services.coingecko import fetch_top_coins, fetch_global, fetch_solana_coins
     from backend.services.fear_greed import fetch_fear_greed
     from backend.services.news_sentiment import get_overall_sentiment
     from backend.services.social_sentiment import get_social_overview
@@ -41,6 +41,7 @@ async def periodic_refresh():
             await fetch_fear_greed(limit=30)
             await get_overall_sentiment()
             await get_social_overview()
+            await fetch_solana_coins()
         except Exception as e:
             print(f"[BedavaFinans] Refresh error: {e}")
         await asyncio.sleep(CACHE_TTL_MARKET_DATA)

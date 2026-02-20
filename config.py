@@ -24,6 +24,7 @@ CACHE_TTL_WHALES = 300         # 5 min
 CACHE_TTL_NEWS = 900           # 15 min
 CACHE_TTL_SOCIAL = 600         # 10 min (social sentiment)
 CACHE_TTL_ARBITRAGE = 300      # 5 min (funding rate arbitrage)
+CACHE_TTL_SOLANA = 300         # 5 min (Solana ecosystem)
 
 # === Technical Analysis Parameters ===
 RSI_PERIOD = 14
@@ -80,6 +81,51 @@ BINANCE_SYMBOL_MAP = {
     "the-graph": "GRT",
     "hedera-hashgraph": "HBAR",
     "aave": "AAVE",
+}
+
+# === Solana Ecosystem ===
+SOLANA_ECOSYSTEM_COUNT = 30
+
+# Sub-category tagging (CoinGecko ID → sub-category)
+SOLANA_SUBCATEGORIES = {
+    # DeFi
+    "raydium": "DeFi",
+    "jupiter-exchange-solana": "DeFi",
+    "marinade": "DeFi",
+    "orca": "DeFi",
+    "drift-protocol": "DeFi",
+    "jito-governance-token": "DeFi",
+    "marginfi": "DeFi",
+    "meteora-2": "DeFi",
+    "kamino": "DeFi",
+    "parcl": "DeFi",
+    "sanctum-2": "DeFi",
+    "lifinity": "DeFi",
+    # Meme
+    "bonk": "Meme",
+    "dogwifcoin": "Meme",
+    "book-of-meme": "Meme",
+    "popcat": "Meme",
+    "myro": "Meme",
+    "wen-4": "Meme",
+    "samoyedcoin": "Meme",
+    "trump-official": "Meme",
+    "fartcoin": "Meme",
+    "ai16z": "Meme",
+    # Infrastructure
+    "solana": "Infrastructure",
+    "pyth-network": "Infrastructure",
+    "helium": "Infrastructure",
+    "render-token": "Infrastructure",
+    "hivemapper": "Infrastructure",
+    "nosana": "Infrastructure",
+    "wormhole": "Infrastructure",
+    "tensor": "Infrastructure",
+    # NFT / Gaming
+    "stepn": "NFT/Gaming",
+    "star-atlas": "NFT/Gaming",
+    "aurory": "NFT/Gaming",
+    "genopets": "NFT/Gaming",
 }
 
 # === Sentiment Keywords ===

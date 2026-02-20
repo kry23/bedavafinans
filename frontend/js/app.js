@@ -127,6 +127,7 @@ function renderDynamicContent() {
         if (window._socialData.has_lunarcrush) renderTrendingSocial('trending-social-list', window._socialData.trending || []);
     }
     if (window._arbitrageData) renderArbitrage(window._arbitrageData);
+    if (window._solanaData) renderSolanaTable(window._solanaData);
     populateDreamCoinSelect();
     calculateDream();
 }
@@ -153,6 +154,13 @@ function showLoadingSkeletons() {
             <div class="skeleton" style="height:16px;width:100%;margin-bottom:8px"></div>
         `).join('');
     }
+    // Solana skeleton
+    const solanaTbody = document.getElementById('solana-tbody');
+    if (solanaTbody) {
+        solanaTbody.innerHTML = Array(5).fill('').map(() => `
+            <tr><td colspan="9" style="padding:12px"><div class="skeleton" style="height:20px;width:100%"></div></td></tr>
+        `).join('');
+    }
     // Movers skeleton
     const moversList = document.getElementById('movers-list');
     if (moversList) {
@@ -177,6 +185,7 @@ async function loadAll() {
         loadSentiment(),
         loadSocial(),
         loadArbitrage(),
+        loadSolana(),
         loadChart(selectedCoin),
     ]);
 
@@ -201,6 +210,7 @@ function startAutoRefresh() {
             loadSentiment(),
             loadSocial(),
             loadArbitrage(),
+            loadSolana(),
         ]);
         updateTimestamp();
         countdownSeconds = REFRESH_INTERVAL / 1000;
@@ -791,6 +801,73 @@ function promptPriceAlert(coinId, event) {
     if (Notification.permission === 'default') {
         Notification.requestPermission();
     }
+}
+
+// ─── Solana Ecosystem ───
+let solanaTab = 'all';
+
+async function loadSolana() {
+    const data = await getSolanaCoins();
+    window._solanaData = data || [];
+    renderSolanaTable(window._solanaData);
+}
+
+function renderSolanaTable(coins) {
+    const tbody = document.getElementById('solana-tbody');
+    if (!tbody) return;
+
+    if (!coins || coins.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-secondary)">${t('solana-loading')}</td></tr>`;
+        return;
+    }
+
+    let filtered = coins;
+    if (solanaTab !== 'all') {
+        filtered = coins.filter(c => c.subcategory === solanaTab);
+    }
+
+    tbody.innerHTML = filtered.map((coin, idx) => {
+        const pct24h = coin.price_change_percentage_24h_in_currency || coin.price_change_percentage_24h;
+        const pct7d = coin.price_change_percentage_7d_in_currency;
+        const catColors = {
+            'DeFi': '#3b82f6',
+            'Meme': '#f97316',
+            'Infrastructure': '#9945FF',
+            'NFT/Gaming': '#ec4899',
+            'Other': '#6b7280',
+        };
+        const catColor = catColors[coin.subcategory] || '#6b7280';
+
+        return `
+            <tr onclick="selectCoin('${coin.id}')" style="cursor:pointer">
+                <td style="color:var(--text-secondary)">${coin.market_cap_rank || idx + 1}</td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <img src="${coin.image}" width="20" height="20" style="border-radius:50%" alt="" loading="lazy">
+                        <span style="font-weight:600">${escapeHtml(coin.name)}</span>
+                        <span style="color:var(--text-secondary);font-size:11px">${coin.symbol.toUpperCase()}</span>
+                    </div>
+                </td>
+                <td>
+                    <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:${catColor}20;color:${catColor};font-weight:600">${coin.subcategory}</span>
+                </td>
+                <td style="font-weight:500">${formatCurrency(coin.current_price)}</td>
+                <td>${formatPercentage(pct24h)}</td>
+                <td>${formatPercentage(pct7d)}</td>
+                <td>${renderSparklineSVG(coin.sparkline_in_7d?.price, (pct7d || 0) >= 0)}</td>
+                <td style="color:var(--text-secondary)">${formatLargeNumber(coin.total_volume)}</td>
+                <td style="color:var(--text-secondary)">${formatCurrency(coin.market_cap)}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function switchSolanaTab(tab) {
+    solanaTab = tab;
+    document.querySelectorAll('.sol-filter-tab').forEach(el => {
+        el.classList.toggle('active', el.dataset.solTab === tab);
+    });
+    if (window._solanaData) renderSolanaTable(window._solanaData);
 }
 
 // ─── Funding Rate Arbitrage ───

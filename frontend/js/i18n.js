@@ -200,6 +200,18 @@ const TRANSLATIONS = {
         'fr-tab-negative': 'Negatif FR',
         'fr-binance-only': 'Sadece Binance',
 
+        // Solana Ecosystem
+        'solana-title': 'Solana Ekosistemi',
+        'solana-subtitle': 'Top 30 Coin',
+        'solana-loading': 'Solana ekosistemi yükleniyor...',
+        'sol-tab-all': 'Tümü',
+        'sol-tab-defi': 'DeFi',
+        'sol-tab-meme': 'Meme',
+        'sol-tab-infra': 'Altyapı',
+        'sol-tab-nft': 'NFT/Gaming',
+        'sol-th-category': 'Kategori',
+        'tip-solana': 'Solana ağındaki en büyük coinler. Piyasa değerine göre sıralanır. DeFi, Meme, Altyapı ve NFT/Gaming alt kategorilerine ayrılmıştır.',
+
         // Tooltips
         'tip-market-cap': 'Tüm kripto paraların toplam piyasa değeri. Fiyat × Dolaşımdaki arz ile hesaplanır.',
         'tip-volume': 'Son 24 saatte tüm borsalarda gerçekleşen toplam işlem hacmi.',
@@ -411,6 +423,18 @@ const TRANSLATIONS = {
         'fr-tab-positive': 'Positive FR',
         'fr-tab-negative': 'Negative FR',
         'fr-binance-only': 'Binance Only',
+
+        // Solana Ecosystem
+        'solana-title': 'Solana Ecosystem',
+        'solana-subtitle': 'Top 30 Coins',
+        'solana-loading': 'Loading Solana ecosystem...',
+        'sol-tab-all': 'All',
+        'sol-tab-defi': 'DeFi',
+        'sol-tab-meme': 'Meme',
+        'sol-tab-infra': 'Infrastructure',
+        'sol-tab-nft': 'NFT/Gaming',
+        'sol-th-category': 'Category',
+        'tip-solana': 'Top coins on the Solana network, ranked by market cap. Split into DeFi, Meme, Infrastructure and NFT/Gaming sub-categories.',
 
         // Tooltips
         'tip-market-cap': 'Total value of all cryptocurrencies. Calculated by price × circulating supply.',

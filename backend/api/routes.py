@@ -5,8 +5,8 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter
 
-from config import SIGNAL_COINS_COUNT, TOP_MOVERS_COUNT, BINANCE_SYMBOL_MAP
-from backend.services.coingecko import fetch_top_coins, fetch_global, fetch_ohlc, fetch_coin_detail
+from config import SIGNAL_COINS_COUNT, TOP_MOVERS_COUNT, BINANCE_SYMBOL_MAP, SOLANA_SUBCATEGORIES
+from backend.services.coingecko import fetch_top_coins, fetch_global, fetch_ohlc, fetch_coin_detail, fetch_solana_coins
 from backend.services.binance import fetch_klines, coingecko_id_to_binance, fetch_top_derivatives
 from backend.services.fear_greed import fetch_fear_greed
 from backend.services.whale_tracker import fetch_whale_transactions, enrich_whale_data
@@ -318,6 +318,17 @@ async def arbitrage():
     """Funding rate arbitrage opportunities from Binance Futures."""
     data = await fetch_arbitrage_data()
     return data or []
+
+
+@router.get("/market/solana")
+async def market_solana():
+    """Top Solana ecosystem coins with sub-category tags."""
+    coins = await fetch_solana_coins()
+    if not coins:
+        return []
+    for coin in coins:
+        coin["subcategory"] = SOLANA_SUBCATEGORIES.get(coin["id"], "Other")
+    return coins
 
 
 @router.get("/coin/{coin_id}")

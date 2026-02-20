@@ -68,3 +68,7 @@ async function getSocialCoin(coinId) {
 async function getArbitrage() {
     return await fetchJSON('/arbitrage');
 }
+
+async function getSolanaCoins() {
+    return await fetchJSON('/market/solana');
+}

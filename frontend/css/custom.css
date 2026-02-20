@@ -967,6 +967,19 @@ body.chart-fs-open {
     }
 }
 
+/* ═══ Solana Ecosystem ═══ */
+.sol-filter-tab {
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+}
+.sol-filter-tab.active {
+    color: #9945FF !important;
+    background: rgba(153, 69, 255, 0.1);
+    border-radius: 6px;
+}
+.sol-table th { font-size: 11px; }
+.sol-table td { font-size: 12px; padding: 8px 10px; }
+
 /* ═══ Funding Rate Arbitrage ═══ */
 .fr-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
 .fr-table td { font-size: 12px; padding: 8px 10px; }
