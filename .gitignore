@@ -30,6 +30,7 @@ desktop.ini
 # Test artifacts
 dashboard_test.png
 dashboard_light.png
+test-results/
 
 # Dependencies
 node_modules/
